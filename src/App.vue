@@ -1,0 +1,488 @@
+<template>
+  <div class="left-content">
+    <div class="logo">
+      Keeps
+    </div>
+    <ul class="menu">
+      <li>全部
+        <a-popover v-model:visible="addGroupVisible" title="添加分类" trigger="click" placement="bottom">
+          <template #content>
+            <a-input v-model:value="newGroup" size="small"/>
+            <div class="save-btn-layout">
+              <a-button type="primary" size="small" class="save-btn" @click="saveGroup">保存</a-button>
+            </div>
+          </template>
+          <plus-outlined class="add-btn"/>
+        </a-popover>
+      </li>
+      <li>掘金小册</li>
+      <li>JavaScript</li>
+      <li>React Native</li>
+      <li>VUE</li>
+    </ul>
+  </div>
+
+  <div class="right-content">
+    <div class="search-bar">
+      <a-input-search
+        v-model:value="value"
+        :placeholder="placeholder"
+        style="width: 400px"
+        @search="onSearch"
+      />
+      <!--      <a-button type="primary" shape="circle" class="float-right">
+              <template #icon>
+                <plus-outlined/>
+              </template>
+            </a-button>-->
+      <a-popover v-model:visible="addPlanVisible" title="添加“学习计划”" trigger="click" placement="leftTop">
+        <template #content>
+          <!--          <a-input v-model:value="newGroup" size="small"/>-->
+          <a-form
+            :model="formState"
+            name="basic"
+            :label-col="{ span: 4 }"
+            :wrapper-col="{ span: 10 }"
+            autocomplete="off"
+            @finish="onFinish"
+            @finishFailed="onFinishFailed"
+            style="width: 500px"
+          >
+            <a-form-item
+              label="标题"
+              name="标题"
+            >
+              <a-input v-model:value="formState.title" size="small" style="width: 350px"/>
+            </a-form-item>
+
+            <a-form-item
+              label="链接"
+              name="链接"
+            >
+              <a-input v-model:value="formState.url" size="small" style="width: 350px"/>
+            </a-form-item>
+
+            <a-form-item
+              label="分类"
+              name="分类"
+            >
+              <a-select
+                v-model:value="formState.group"
+                size="small"
+                style="width: 350px"
+                :options="groupOptions"
+              ></a-select>
+            </a-form-item>
+
+<!--            <a-form-item :wrapper-col="{ offset: 8, span: 16 }">
+              <a-button type="primary" html-type="submit">Submit</a-button>
+            </a-form-item>-->
+          </a-form>
+          <div class="save-btn-layout">
+            <a-button type="primary" size="small" class="save-btn" @click="saveGroup">保存</a-button>
+          </div>
+        </template>
+        <a-button type="primary" shape="circle" class="float-right">
+          <template #icon>
+            <plus-outlined/>
+          </template>
+        </a-button>
+      </a-popover>
+    </div>
+    <div class="table-content">
+      <a-table :columns="columns" :data-source="data" size="small" :pagination="{ pageSize: 15 }"
+      >
+        <template #headerCell="{ column }">
+          <template v-if="column.key === 'name'">
+            <span>
+              学习计划
+            </span>
+          </template>
+          <template v-if="column.key === 'action'">
+            <span>
+              进度
+            </span>
+          </template>
+        </template>
+
+        <template #bodyCell="{ column, record }">
+          <template v-if="column.key === 'name'">
+            <a :href="record.url" target="_blank">
+              {{ record.title }}
+            </a>
+          </template>
+          <template v-else-if="column.key === 'action'">
+            <a-progress :percent="record.progress" :steps="10" strokeColor="#52c41a"/>
+          </template>
+        </template>
+      </a-table>
+    </div>
+
+
+  </div>
+  <!--  <header>
+      <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
+
+      <div class="wrapper">
+        <HelloWorld msg="You did it!" />
+
+        <nav>
+          <RouterLink to="/">Home</RouterLink>
+          <RouterLink to="/about">About</RouterLink>
+        </nav>
+      </div>
+    </header>
+
+    <RouterView />-->
+</template>
+
+<script setup lang="ts">
+import {RouterLink, RouterView} from 'vue-router'
+import HelloWorld from './components/HelloWorld.vue'
+import {UserOutlined, VideoCameraOutlined, UploadOutlined} from '@ant-design/icons-vue';
+import {SmileOutlined, DownOutlined} from '@ant-design/icons-vue';
+import {ref, reactive} from 'vue';
+import {PlusOutlined, SearchOutlined} from '@ant-design/icons-vue';
+
+interface FormState {
+  title: string;
+  url: string;
+  group: string;
+}
+
+const value = ref<string>('');
+const newGroup = ref<string>('');
+const placeholder = ref<string>('在 “ 全部 ” 下搜索');
+const addGroupVisible = ref<boolean>(false);
+const addPlanVisible = ref<boolean>(false);
+const saveGroup = () => {
+  addGroupVisible.value = false;
+};
+const formState = reactive<FormState>({
+  title: '',
+  url: '',
+  group: '',
+});
+
+const groupOptions = ref([
+  {id: '1', value: '掘金小册'},
+  {id: '2', value: 'JavaScript'},
+  {id: '3', value: 'React Native'},
+  {id: '4', value: 'VUE'},
+]);
+
+const onFinish = (values: any) => {
+  console.log('Success:', values);
+};
+
+const onFinishFailed = (errorInfo: any) => {
+  console.log('Failed:', errorInfo);
+};
+
+const columns = [
+  {
+    name: 'Name',
+    dataIndex: 'name',
+    key: 'name',
+  },
+  {
+    title: 'Action',
+    key: 'action',
+    width: 240,
+  },
+];
+
+const data = [
+  {
+    key: '1',
+    title: '想成为中高级前端，必须理解这10种javascript设计模式',
+    url: 'https://juejin.cn/post/7433277439634096168',
+    progress: 30
+  },
+  {
+    key: '2',
+    title: '28个令人惊艳的JavaScript单行代码',
+    url: 'https://juejin.cn/post/7307963529872605218Ò',
+    progress: 40
+  },
+  {
+    key: '3',
+    title: '前端必会，教你从 0 开始使用 docker + nginx 部署项目，太赞了',
+    url: 'https://juejin.cn/post/7390735346847907874',
+    progress: 40
+  },
+  {
+    key: '1',
+    title: '想成为中高级前端，必须理解这10种javascript设计模式',
+    url: 'https://juejin.cn/post/7433277439634096168',
+    progress: 30
+  },
+  {
+    key: '2',
+    title: '28个令人惊艳的JavaScript单行代码',
+    url: 'https://juejin.cn/post/7307963529872605218Ò',
+    progress: 40
+  },
+  {
+    key: '3',
+    title: '前端必会，教你从 0 开始使用 docker + nginx 部署项目，太赞了',
+    url: 'https://juejin.cn/post/7390735346847907874',
+    progress: 40
+  },
+  {
+    key: '1',
+    title: '想成为中高级前端，必须理解这10种javascript设计模式',
+    url: 'https://juejin.cn/post/7433277439634096168',
+    progress: 30
+  },
+  {
+    key: '2',
+    title: '28个令人惊艳的JavaScript单行代码',
+    url: 'https://juejin.cn/post/7307963529872605218Ò',
+    progress: 40
+  },
+  {
+    key: '3',
+    title: '前端必会，教你从 0 开始使用 docker + nginx 部署项目，太赞了',
+    url: 'https://juejin.cn/post/7390735346847907874',
+    progress: 40
+  },
+  {
+    key: '1',
+    title: '想成为中高级前端，必须理解这10种javascript设计模式',
+    url: 'https://juejin.cn/post/7433277439634096168',
+    progress: 30
+  },
+  {
+    key: '2',
+    title: '28个令人惊艳的JavaScript单行代码',
+    url: 'https://juejin.cn/post/7307963529872605218Ò',
+    progress: 40
+  },
+  {
+    key: '3',
+    title: '前端必会，教你从 0 开始使用 docker + nginx 部署项目，太赞了',
+    url: 'https://juejin.cn/post/7390735346847907874',
+    progress: 40
+  },
+  {
+    key: '1',
+    title: '想成为中高级前端，必须理解这10种javascript设计模式',
+    url: 'https://juejin.cn/post/7433277439634096168',
+    progress: 30
+  },
+  {
+    key: '2',
+    title: '28个令人惊艳的JavaScript单行代码',
+    url: 'https://juejin.cn/post/7307963529872605218Ò',
+    progress: 40
+  },
+  {
+    key: '3',
+    title: '前端必会，教你从 0 开始使用 docker + nginx 部署项目，太赞了',
+    url: 'https://juejin.cn/post/7390735346847907874',
+    progress: 40
+  },
+  {
+    key: '1',
+    title: '想成为中高级前端，必须理解这10种javascript设计模式',
+    url: 'https://juejin.cn/post/7433277439634096168',
+    progress: 30
+  },
+  {
+    key: '2',
+    title: '28个令人惊艳的JavaScript单行代码',
+    url: 'https://juejin.cn/post/7307963529872605218Ò',
+    progress: 40
+  },
+  {
+    key: '3',
+    title: '前端必会，教你从 0 开始使用 docker + nginx 部署项目，太赞了',
+    url: 'https://juejin.cn/post/7390735346847907874',
+    progress: 40
+  },
+  {
+    key: '1',
+    title: '想成为中高级前端，必须理解这10种javascript设计模式',
+    url: 'https://juejin.cn/post/7433277439634096168',
+    progress: 30
+  },
+  {
+    key: '2',
+    title: '28个令人惊艳的JavaScript单行代码',
+    url: 'https://juejin.cn/post/7307963529872605218Ò',
+    progress: 40
+  },
+  {
+    key: '3',
+    title: '前端必会，教你从 0 开始使用 docker + nginx 部署项目，太赞了',
+    url: 'https://juejin.cn/post/7390735346847907874',
+    progress: 40
+  },
+  {
+    key: '1',
+    title: '想成为中高级前端，必须理解这10种javascript设计模式',
+    url: 'https://juejin.cn/post/7433277439634096168',
+    progress: 30
+  },
+  {
+    key: '2',
+    title: '28个令人惊艳的JavaScript单行代码',
+    url: 'https://juejin.cn/post/7307963529872605218Ò',
+    progress: 40
+  },
+  {
+    key: '3',
+    title: '前端必会，教你从 0 开始使用 docker + nginx 部署项目，太赞了',
+    url: 'https://juejin.cn/post/7390735346847907874',
+    progress: 40
+  }
+];
+
+const onSearch = (searchValue: string) => {
+  console.log('use value', searchValue);
+  console.log('or use this.value', value.value);
+};
+
+</script>
+
+<style scoped>
+.left-content {
+  border-right: 1px solid #d5d5d5;
+  width: 250px;
+  height: 100vh;
+  position: relative;
+  float: left;
+}
+.ant-form-item{
+  margin-bottom: 10px;
+}
+.right-content {
+  width: calc(100% - 251px);
+  height: 100vh;
+  position: relative;
+  float: left;
+
+  .search-bar {
+    height: 24px;
+    padding: 48px 40px;
+  }
+
+  .table-content {
+    padding: 0 40px;
+  }
+}
+
+.logo {
+  height: 120px;
+  font-size: 38px;
+  color: #52c41a;
+  font-weight: bold;
+  text-align: center;
+  border-bottom: 1px solid #d5d5d5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.save-btn-layout {
+  text-align: right;
+}
+
+.save-btn {
+  margin-top: 10px;
+  word-spacing: -2px;
+}
+
+.menu {
+  padding: 10px 20px 10px 70px;
+
+  li {
+    display: block;
+    font-size: 14px;
+    font-weight: bold;
+    margin: 8px 0;
+    cursor: pointer;
+  }
+}
+
+.add-btn {
+  float: right;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+a {
+  color: #000000;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+.float-right {
+  float: right;
+}
+
+/*header {
+  line-height: 1.5;
+  max-height: 100vh;
+}
+
+.logo {
+  display: block;
+  margin: 0 auto 2rem;
+}
+
+nav {
+  width: 100%;
+  font-size: 12px;
+  text-align: center;
+  margin-top: 2rem;
+}
+
+nav a.router-link-exact-active {
+  color: var(--color-text);
+}
+
+nav a.router-link-exact-active:hover {
+  background-color: transparent;
+}
+
+nav a {
+  display: inline-block;
+  padding: 0 1rem;
+  border-left: 1px solid var(--color-border);
+}
+
+nav a:first-of-type {
+  border: 0;
+}
+
+@media (min-width: 1024px) {
+  header {
+    display: flex;
+    place-items: center;
+    padding-right: calc(var(--section-gap) / 2);
+  }
+
+  .logo {
+    margin: 0 2rem 0 0;
+  }
+
+  header .wrapper {
+    display: flex;
+    place-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  nav {
+    text-align: left;
+    margin-left: -1rem;
+    font-size: 1rem;
+
+    padding: 1rem 0;
+    margin-top: 1rem;
+  }
+}*/
+</style>
