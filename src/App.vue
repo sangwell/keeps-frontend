@@ -1,21 +1,26 @@
 <template>
-  <div class="left-content">
+<!--  <div class="left-content">
     <div class="logo">
       Keeps
     </div>
     <ul class="menu">
-      <li>全部
-        <a-popover v-model:visible="addGroupVisible" title="添加分类" trigger="click" placement="bottom">
-          <template #content>
-            <a-input v-model:value="newGroup" size="small"/>
-            <div class="save-btn-layout">
-              <a-button type="primary" size="small" class="save-btn" @click="saveGroup">保存</a-button>
-            </div>
-          </template>
-          <plus-outlined class="add-btn"/>
-        </a-popover>
-      </li>
-      <li v-for="item in groupOptions">{{ item.name }} <span class="group-progress">{{item.progress}}/{{ item.total}}</span></li>
+
+      <SettingOutlined class="add-btn"/>
+
+      <a-popover v-model:visible="addGroupVisible" @openChange="handleGroupChange" title="添加分类" trigger="click"
+                 placement="bottom">
+        <template #content>
+          <a-input v-model:value="newGroup" size="small"/>
+          <div class="save-btn-layout">
+            <a-button type="primary" size="small" class="save-btn" @click="saveGroup">保存</a-button>
+          </div>
+        </template>
+        <plus-outlined class="add-btn"/>
+      </a-popover>
+      <li @click="setSelectedGroup(-1)"><span :class="{ active: selectedGroup === -1 }">全部</span></li>
+      <li v-for="(item, index) in groupOptions" :class="{ active: selectedGroup === index }"
+          @click="setSelectedGroup(index)">{{ item.name }} <span
+        class="group-progress">{{ item.progress }}/{{ item.total }}</span></li>
     </ul>
   </div>
 
@@ -27,7 +32,8 @@
         style="width: 400px"
         @search="onSearch"
       />
-      <a-popover v-model:visible="addPlanVisible" title="添加“学习计划”" trigger="click" placement="leftTop">
+      <a-popover v-model:visible="addPlanVisible" @openChange="handlePlanChange" title="添加“学习计划”" trigger="click"
+                 placement="leftTop">
         <template #content>
           <a-form
             :model="formState"
@@ -66,7 +72,7 @@
             </a-form-item>
           </a-form>
           <div class="save-btn-layout">
-            <a-button type="primary" size="small" class="save-btn" @click="saveGroup">保存</a-button>
+            <a-button type="primary" size="small" class="save-btn" @click="savePlan">保存</a-button>
           </div>
         </template>
         <a-button type="primary" shape="circle" class="float-right">
@@ -85,9 +91,14 @@
               学习计划
             </span>
           </template>
-          <template v-if="column.key === 'action'">
+          <template v-if="column.key === 'progress'">
             <span>
               进度
+            </span>
+          </template>
+          <template v-if="column.key === 'action'">
+            <span>
+              操作
             </span>
           </template>
         </template>
@@ -98,16 +109,20 @@
               {{ record.title }}
             </a>
           </template>
-          <template v-else-if="column.key === 'action'">
+          <template v-else-if="column.key === 'progress'">
             <a-progress :percent="record.progress" :steps="10" strokeColor="#52c41a"/>
+          </template>
+          <template v-else-if="column.key === 'action'">
+            <EditOutlined class="action-icon"/>
+            <CloseOutlined class="action-icon"/>
           </template>
         </template>
       </a-table>
     </div>
 
 
-  </div>
-  <!--  <header>
+  </div>-->
+<!--    <header>
       <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
 
       <div class="wrapper">
@@ -118,9 +133,9 @@
           <RouterLink to="/about">About</RouterLink>
         </nav>
       </div>
-    </header>
+    </header>-->
 
-    <RouterView />-->
+    <RouterView />
 </template>
 
 <script setup lang="ts">
@@ -129,7 +144,7 @@ import HelloWorld from './components/HelloWorld.vue'
 import {UserOutlined, VideoCameraOutlined, UploadOutlined} from '@ant-design/icons-vue';
 import {SmileOutlined, DownOutlined} from '@ant-design/icons-vue';
 import {ref, reactive} from 'vue';
-import {PlusOutlined, SearchOutlined} from '@ant-design/icons-vue';
+import {PlusOutlined, CloseOutlined, EditOutlined, SettingOutlined} from '@ant-design/icons-vue';
 
 interface FormState {
   title: string;
@@ -142,8 +157,36 @@ const newGroup = ref<string>('');
 const placeholder = ref<string>('在 “ 全部 ” 下搜索');
 const addGroupVisible = ref<boolean>(false);
 const addPlanVisible = ref<boolean>(false);
+const selectedGroup = ref<number>(-1);
+
+const setSelectedGroup = (index: number) => {
+  selectedGroup.value = index;
+  if (index === -1) {
+    placeholder.value = '在 “ 全部 ” 下搜索';
+  } else {
+    const groupName: string = groupOptions.value[index].name;
+    placeholder.value = `在 “ ${groupName} ” 下搜索`;
+  }
+}
+
+const handleGroupChange = (isOpen: boolean) => {
+  if (isOpen) {
+    newGroup.value = '';
+  }
+}
 const saveGroup = () => {
   addGroupVisible.value = false;
+};
+
+const handlePlanChange = (isOpen: boolean) => {
+  if (isOpen) {
+    formState.title = '';
+    formState.url = '';
+    formState.group = '';
+  }
+}
+const savePlan = () => {
+  addPlanVisible.value = false;
 };
 const formState = reactive<FormState>({
   title: '',
@@ -152,6 +195,18 @@ const formState = reactive<FormState>({
 });
 
 const groupOptions = ref([
+  {id: '1', name: '掘金小册', total: 10, progress: 2},
+  {id: '2', name: 'JavaScript', total: 16, progress: 9},
+  {id: '3', name: 'React Native', total: 23, progress: 2},
+  {id: '4', name: 'VUE', total: 10, progress: 5},
+  {id: '1', name: '掘金小册', total: 10, progress: 2},
+  {id: '2', name: 'JavaScript', total: 16, progress: 9},
+  {id: '3', name: 'React Native React Native React Native', total: 23, progress: 2},
+  {id: '4', name: 'VUE', total: 10, progress: 5},
+  {id: '1', name: '掘金小册', total: 10, progress: 2},
+  {id: '2', name: 'JavaScript', total: 16, progress: 9},
+  {id: '3', name: 'React Native', total: 23, progress: 2},
+  {id: '4', name: 'VUE', total: 10, progress: 5},
   {id: '1', name: '掘金小册', total: 10, progress: 2},
   {id: '2', name: 'JavaScript', total: 16, progress: 9},
   {id: '3', name: 'React Native', total: 23, progress: 2},
@@ -173,10 +228,15 @@ const columns = [
     key: 'name',
   },
   {
-    title: 'Action',
-    key: 'action',
+    title: 'Progress',
+    key: 'progress',
     width: 240,
   },
+  {
+    title: 'Action',
+    key: 'action',
+    width: 80,
+  }
 ];
 
 const data = [
@@ -346,6 +406,14 @@ const onSearch = (searchValue: string) => {
   margin-bottom: 10px;
 }
 
+.ant-btn-primary {
+  background-color: #52c41a
+}
+
+.ant-btn-primary:hover {
+  background-color: #52c41a
+}
+
 .right-content {
   width: calc(100% - 251px);
   height: 100vh;
@@ -383,6 +451,11 @@ const onSearch = (searchValue: string) => {
   word-spacing: -2px;
 }
 
+.action-icon {
+  cursor: pointer;
+  margin-right: 12px;
+}
+
 .menu {
   padding: 10px 20px 10px 70px;
 
@@ -390,20 +463,28 @@ const onSearch = (searchValue: string) => {
     display: block;
     font-size: 14px;
     font-weight: bold;
-    margin: 8px 0;
+    margin: 12px 0;
     cursor: pointer;
+    color: #00000050;
   }
 }
 
+.active {
+  color: #000000 !important;
+}
+
 .add-btn {
+  color: #000000;
   float: right;
   cursor: pointer;
   font-size: 16px;
+  margin-top: 12px;
+  margin-left: 10px;
 }
 
-.group-progress{
+.group-progress {
   display: inline-block;
-  background: #52c41a;
+  background: #4fb020;
   color: #ffffff;
   font-size: 12px;
   border-radius: 4px;
