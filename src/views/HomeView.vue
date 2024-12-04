@@ -1,7 +1,8 @@
 <template>
   <div class="left-content">
     <div class="logo">
-      Keeps
+      <span class="title">Keeps</span>
+      <span class="slogan">你的学习进度管理助手👍</span>
     </div>
     <ul class="menu">
 
@@ -411,7 +412,7 @@ const onSearch = (searchValue: string) => {
 }
 
 .ant-btn-primary:hover {
-  background-color: #52c41a
+  background-color: #52c41acc
 }
 
 .right-content {
@@ -431,15 +432,25 @@ const onSearch = (searchValue: string) => {
 }
 
 .logo {
-  height: 120px;
+  height: 100px;
+  padding-top: 20px;
   font-size: 38px;
-  color: #52c41a;
-  font-weight: bold;
   text-align: center;
   border-bottom: 1px solid #d5d5d5;
-  display: flex;
   align-items: center;
   justify-content: center;
+  span{
+    display: block;
+  }
+  .title{
+    color: #52c41a;
+    text-shadow: 3px 3px 0px #555ed5;
+    font-weight: bold;
+  }
+  .slogan{
+    font-size: 12px;
+    color: #2e2e2e;
+  }
 }
 
 .save-btn-layout {
