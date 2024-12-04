@@ -15,10 +15,7 @@
           <plus-outlined class="add-btn"/>
         </a-popover>
       </li>
-      <li>掘金小册</li>
-      <li>JavaScript</li>
-      <li>React Native</li>
-      <li>VUE</li>
+      <li v-for="item in groupOptions">{{ item.name }} <span class="group-progress">{{item.progress}}/{{ item.total}}</span></li>
     </ul>
   </div>
 
@@ -30,14 +27,8 @@
         style="width: 400px"
         @search="onSearch"
       />
-      <!--      <a-button type="primary" shape="circle" class="float-right">
-              <template #icon>
-                <plus-outlined/>
-              </template>
-            </a-button>-->
       <a-popover v-model:visible="addPlanVisible" title="添加“学习计划”" trigger="click" placement="leftTop">
         <template #content>
-          <!--          <a-input v-model:value="newGroup" size="small"/>-->
           <a-form
             :model="formState"
             name="basic"
@@ -69,14 +60,10 @@
               <a-select
                 v-model:value="formState.group"
                 size="small"
-                style="width: 350px"
-                :options="groupOptions"
-              ></a-select>
+                style="width: 350px">
+                <a-select-option v-for="item in groupOptions" :value="item.id">{{ item.name }}</a-select-option>
+              </a-select>
             </a-form-item>
-
-<!--            <a-form-item :wrapper-col="{ offset: 8, span: 16 }">
-              <a-button type="primary" html-type="submit">Submit</a-button>
-            </a-form-item>-->
           </a-form>
           <div class="save-btn-layout">
             <a-button type="primary" size="small" class="save-btn" @click="saveGroup">保存</a-button>
@@ -165,10 +152,10 @@ const formState = reactive<FormState>({
 });
 
 const groupOptions = ref([
-  {id: '1', value: '掘金小册'},
-  {id: '2', value: 'JavaScript'},
-  {id: '3', value: 'React Native'},
-  {id: '4', value: 'VUE'},
+  {id: '1', name: '掘金小册', total: 10, progress: 2},
+  {id: '2', name: 'JavaScript', total: 16, progress: 9},
+  {id: '3', name: 'React Native', total: 23, progress: 2},
+  {id: '4', name: 'VUE', total: 10, progress: 5},
 ]);
 
 const onFinish = (values: any) => {
@@ -354,9 +341,11 @@ const onSearch = (searchValue: string) => {
   position: relative;
   float: left;
 }
-.ant-form-item{
+
+.ant-form-item {
   margin-bottom: 10px;
 }
+
 .right-content {
   width: calc(100% - 251px);
   height: 100vh;
@@ -410,6 +399,15 @@ const onSearch = (searchValue: string) => {
   float: right;
   cursor: pointer;
   font-size: 16px;
+}
+
+.group-progress{
+  display: inline-block;
+  background: #52c41a;
+  color: #ffffff;
+  font-size: 12px;
+  border-radius: 4px;
+  padding: 2px 4px;
 }
 
 a {
