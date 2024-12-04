@@ -212,6 +212,22 @@ const groupOptions = ref([
   {id: '2', name: 'JavaScript', total: 16, progress: 9},
   {id: '3', name: 'React Native', total: 23, progress: 2},
   {id: '4', name: 'VUE', total: 10, progress: 5},
+  {id: '1', name: '掘金小册', total: 10, progress: 2},
+  {id: '2', name: 'JavaScript', total: 16, progress: 9},
+  {id: '3', name: 'React Native', total: 23, progress: 2},
+  {id: '4', name: 'VUE', total: 10, progress: 5},
+  {id: '1', name: '掘金小册', total: 10, progress: 2},
+  {id: '2', name: 'JavaScript', total: 16, progress: 9},
+  {id: '3', name: 'React Native React Native React Native', total: 23, progress: 2},
+  {id: '4', name: 'VUE', total: 10, progress: 5},
+  {id: '1', name: '掘金小册', total: 10, progress: 2},
+  {id: '2', name: 'JavaScript', total: 16, progress: 9},
+  {id: '3', name: 'React Native', total: 23, progress: 2},
+  {id: '4', name: 'VUE', total: 10, progress: 5},
+  {id: '1', name: '掘金小册', total: 10, progress: 2},
+  {id: '2', name: 'JavaScript', total: 16, progress: 9},
+  {id: '3', name: 'React Native', total: 23, progress: 2},
+  {id: '4', name: 'VUE', total: 10, progress: 5},
 ]);
 
 const onFinish = (values: any) => {
@@ -439,15 +455,18 @@ const onSearch = (searchValue: string) => {
   border-bottom: 1px solid #d5d5d5;
   align-items: center;
   justify-content: center;
-  span{
+
+  span {
     display: block;
   }
-  .title{
+
+  .title {
     color: #52c41a;
     //text-shadow: 3px 3px 0px #555ed5;
     font-weight: bold;
   }
-  .slogan{
+
+  .slogan {
     font-size: 12px;
     color: #2e2e2e;
   }

@@ -82,7 +82,8 @@ const login = () => {
 .logo-position {
   position: absolute;
   top: 50px;
-  left: 50px;
+  left: 80px;
+  scale: 1.2;
 
   span {
     display: block;
