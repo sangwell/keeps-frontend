@@ -104,11 +104,10 @@ const login = () => {
 
 .login-layout {
   width: 260px;
-  //height: 300px;
   border: 1px solid #dedede;
   box-shadow: 0px 0px 6px 0px #898989;
   border-radius: 5px;
   background: #ffffff;
-  padding: 30px;
+  padding: 20px 30px;
 }
 </style>
