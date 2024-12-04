@@ -444,7 +444,7 @@ const onSearch = (searchValue: string) => {
   }
   .title{
     color: #52c41a;
-    text-shadow: 3px 3px 0px #555ed5;
+    //text-shadow: 3px 3px 0px #555ed5;
     font-weight: bold;
   }
   .slogan{

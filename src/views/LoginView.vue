@@ -91,7 +91,7 @@ const login = () => {
   .title {
     font-size: 38px;
     color: #52c41a;
-    text-shadow: 3px 3px 0px #555ed5;
+    //text-shadow: 3px 3px 0px #555ed5;
     font-weight: bold;
   }
 
