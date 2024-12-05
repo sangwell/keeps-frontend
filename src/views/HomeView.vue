@@ -6,7 +6,12 @@
     </div>
     <ul class="menu">
 
-      <SettingOutlined class="add-btn"/>
+
+      <li class="all-group" @click="setSelectedGroup(-1)"><span :class="{ active: selectedGroup === -1 }">全部</span>
+      </li>
+
+      <SettingOutlined v-if="!groupEditable" class="setting-btn" @click="toggleGroupEditable"/>
+      <CheckOutlined v-if="groupEditable" class="setting-btn" @click="toggleGroupEditable"/>
 
       <a-popover v-model:visible="addGroupVisible" @openChange="handleGroupChange" title="添加分类" trigger="click"
                  placement="bottom">
@@ -18,10 +23,11 @@
         </template>
         <plus-outlined class="add-btn"/>
       </a-popover>
-      <li @click="setSelectedGroup(-1)"><span :class="{ active: selectedGroup === -1 }">全部</span></li>
+
       <li v-for="(item, index) in groupOptions" :class="{ active: selectedGroup === index }"
-          @click="setSelectedGroup(index)">{{ item.name }} <span
-        class="group-progress">{{ item.progress }}/{{ item.total }}</span></li>
+          @click="setSelectedGroup(index)">
+        <MinusOutlined v-if="groupEditable" class="group-delete-icon" @click="deleteGroup"/>
+        {{ item.name }} <span class="group-progress">{{ item.progress }}/{{ item.total }}</span></li>
     </ul>
   </div>
 
@@ -70,6 +76,21 @@
                 style="width: 350px">
                 <a-select-option v-for="item in groupOptions" :value="item.id">{{ item.name }}</a-select-option>
               </a-select>
+            </a-form-item>
+
+            <a-form-item
+              label="进度"
+              name="进度"
+            >
+              <a-progress :percent="formState.progress" :steps="10" strokeColor="#52c41a" style="width: 350px"/>
+              <a-button-group>
+                <a-button @click="decline" size="small">
+                  <template #icon><minus-outlined /></template>
+                </a-button>
+                <a-button @click="increase" size="small">
+                  <template #icon><plus-outlined /></template>
+                </a-button>
+              </a-button-group>
             </a-form-item>
           </a-form>
           <div class="save-btn-layout">
@@ -120,37 +141,25 @@
         </template>
       </a-table>
     </div>
-
-
   </div>
-  <!--  <header>
-      <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
-
-      <div class="wrapper">
-        <HelloWorld msg="You did it!" />
-
-        <nav>
-          <RouterLink to="/">Home</RouterLink>
-          <RouterLink to="/about">About</RouterLink>
-        </nav>
-      </div>
-    </header>
-
-    <RouterView />-->
 </template>
 
 <script setup lang="ts">
-import {RouterLink, RouterView} from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
-import {UserOutlined, VideoCameraOutlined, UploadOutlined} from '@ant-design/icons-vue';
-import {SmileOutlined, DownOutlined} from '@ant-design/icons-vue';
 import {ref, reactive} from 'vue';
-import {PlusOutlined, CloseOutlined, EditOutlined, SettingOutlined} from '@ant-design/icons-vue';
+import {
+  PlusOutlined,
+  CloseOutlined,
+  EditOutlined,
+  SettingOutlined,
+  MinusOutlined,
+  CheckOutlined
+} from '@ant-design/icons-vue';
 
 interface FormState {
   title: string;
   url: string;
   group: string;
+  progress: number;
 }
 
 const value = ref<string>('');
@@ -159,6 +168,7 @@ const placeholder = ref<string>('在 “ 全部 ” 下搜索');
 const addGroupVisible = ref<boolean>(false);
 const addPlanVisible = ref<boolean>(false);
 const selectedGroup = ref<number>(-1);
+const groupEditable = ref<boolean>(false);
 
 const setSelectedGroup = (index: number) => {
   selectedGroup.value = index;
@@ -168,6 +178,26 @@ const setSelectedGroup = (index: number) => {
     const groupName: string = groupOptions.value[index].name;
     placeholder.value = `在 “ ${groupName} ” 下搜索`;
   }
+}
+
+const increase = () => {
+  const percent = formState.progress + 10;
+  formState.progress = percent > 100 ? 100 : percent;
+};
+
+const decline = () => {
+  const percent = formState.progress - 10;
+  formState.progress = percent < 0 ? 0 : percent;
+};
+
+const toggleGroupEditable = () => {
+  console.log(111)
+  groupEditable.value = !groupEditable.value;
+}
+
+const deleteGroup = (event: any) => {
+  event.stopPropagation(); // 阻止事件冒泡
+  console.log('Icon clicked!');
 }
 
 const handleGroupChange = (isOpen: boolean) => {
@@ -193,6 +223,7 @@ const formState = reactive<FormState>({
   title: '',
   url: '',
   group: '',
+  progress: 0
 });
 
 const groupOptions = ref([
@@ -472,6 +503,10 @@ const onSearch = (searchValue: string) => {
   }
 }
 
+.all-group {
+  width: 50px;
+}
+
 .save-btn-layout {
   text-align: right;
 }
@@ -486,7 +521,25 @@ const onSearch = (searchValue: string) => {
   margin-right: 12px;
 }
 
+/* 修改整个滚动条的样式 */
+::-webkit-scrollbar {
+  width: 5px; /* 滚动条宽度 */
+}
+
+/* 修改滚动条的滑块样式 */
+::-webkit-scrollbar-thumb {
+  background-color: #c1c1c1; /* 滑块颜色 */
+  border-radius: 5px; /* 滑块圆角 */
+}
+
+/* 修改滚动条的轨道样式 */
+::-webkit-scrollbar-track {
+  background-color: #f1f1f1; /* 轨道颜色 */
+}
+
 .menu {
+  height: calc(100vh - 158px);
+  overflow-y: scroll;
   padding: 10px 20px 10px 70px;
 
   li {
@@ -496,7 +549,16 @@ const onSearch = (searchValue: string) => {
     margin: 12px 0;
     cursor: pointer;
     color: #00000050;
+    position: relative;
   }
+}
+
+.group-delete-icon {
+  position: absolute;
+  top: 3px;
+  left: -20px;
+  cursor: pointer;
+  color: #000000;
 }
 
 .active {
@@ -508,7 +570,16 @@ const onSearch = (searchValue: string) => {
   float: right;
   cursor: pointer;
   font-size: 16px;
-  margin-top: 12px;
+  margin-top: -28px;
+  margin-right: 26px;
+}
+
+.setting-btn {
+  color: #000000;
+  float: right;
+  cursor: pointer;
+  font-size: 16px;
+  margin-top: -28px;
   margin-left: 10px;
 }
 
@@ -516,7 +587,7 @@ const onSearch = (searchValue: string) => {
   display: inline-block;
   background: #4fb020;
   color: #ffffff;
-  font-size: 12px;
+  font-size: 10px;
   border-radius: 4px;
   padding: 2px 4px;
 }
@@ -532,66 +603,4 @@ a:hover {
 .float-right {
   float: right;
 }
-
-/*header {
-  line-height: 1.5;
-  max-height: 100vh;
-}
-
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
-
-nav {
-  width: 100%;
-  font-size: 12px;
-  text-align: center;
-  margin-top: 2rem;
-}
-
-nav a.router-link-exact-active {
-  color: var(--color-text);
-}
-
-nav a.router-link-exact-active:hover {
-  background-color: transparent;
-}
-
-nav a {
-  display: inline-block;
-  padding: 0 1rem;
-  border-left: 1px solid var(--color-border);
-}
-
-nav a:first-of-type {
-  border: 0;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-
-  nav {
-    text-align: left;
-    margin-left: -1rem;
-    font-size: 1rem;
-
-    padding: 1rem 0;
-    margin-top: 1rem;
-  }
-}*/
 </style>
