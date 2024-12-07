@@ -75,6 +75,10 @@ const login = () => {
   background-color: #52c41acc
 }
 
+.ant-btn-primary:not(:disabled):active {
+  background-color: #52c41acc
+}
+
 .ant-input, .ant-input-affix-wrapper {
   border-radius: 3px;
 }

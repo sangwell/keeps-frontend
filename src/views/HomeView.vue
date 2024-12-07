@@ -7,7 +7,8 @@
     <ul class="menu">
 
 
-      <li class="all-group" @click="setSelectedGroup(-1)"><span :class="{ active: selectedGroup === -1 }">全部</span>
+      <li class="all-group" @click="setSelectedGroup(-1)" :class="{ active: selectedGroup === -1 }">
+        全部
       </li>
 
       <SettingOutlined v-if="!groupEditable" class="setting-btn" @click="toggleGroupEditable"/>
@@ -444,7 +445,7 @@ const onSearch = (searchValue: string) => {
 <style scoped>
 .left-content {
   border-right: 1px solid #d5d5d5;
-  width: 250px;
+  width: 350px;
   height: 100vh;
   position: relative;
   float: left;
@@ -463,7 +464,7 @@ const onSearch = (searchValue: string) => {
 }
 
 .right-content {
-  width: calc(100% - 251px);
+  width: calc(100% - 351px);
   height: 100vh;
   position: relative;
   float: left;
@@ -504,7 +505,7 @@ const onSearch = (searchValue: string) => {
 }
 
 .all-group {
-  width: 50px;
+  width: 200px;
 }
 
 .save-btn-layout {
@@ -546,23 +547,26 @@ const onSearch = (searchValue: string) => {
     display: block;
     font-size: 14px;
     font-weight: bold;
-    margin: 12px 0;
+    //margin: 12px 0;
+    padding: 4px 0px 4px 8px;
     cursor: pointer;
-    color: #00000050;
+    //color: #00000050;
     position: relative;
   }
 }
 
 .group-delete-icon {
   position: absolute;
-  top: 3px;
-  left: -20px;
+  top: 7px;
+  left: -18px;
   cursor: pointer;
   color: #000000;
 }
 
 .active {
   color: #000000 !important;
+  background: #52c41a52;
+  border-radius: 6px;
 }
 
 .add-btn {
@@ -570,7 +574,7 @@ const onSearch = (searchValue: string) => {
   float: right;
   cursor: pointer;
   font-size: 16px;
-  margin-top: -28px;
+  margin-top: -22px;
   margin-right: 26px;
 }
 
@@ -579,17 +583,18 @@ const onSearch = (searchValue: string) => {
   float: right;
   cursor: pointer;
   font-size: 16px;
-  margin-top: -28px;
+  margin-top: -22px;
   margin-left: 10px;
 }
 
 .group-progress {
   display: inline-block;
-  background: #4fb020;
-  color: #ffffff;
+  //background: #4fb020;
+  color: #959595;
   font-size: 10px;
   border-radius: 4px;
-  padding: 2px 4px;
+  padding: 3px 4px;
+  float: right;
 }
 
 a {
