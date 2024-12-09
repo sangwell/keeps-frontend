@@ -140,7 +140,7 @@
             <a-progress :percent="record.progress" :steps="10" strokeColor="#52c41a"/>
           </template>
           <template v-else-if="column.key === 'action'">
-            <EditOutlined class="action-icon"/>
+            <EditOutlined class="action-icon" @click="editPlan(record)"/>
             <CloseOutlined class="action-icon" @click="delPlan(record.id)"/>
           </template>
         </template>
@@ -180,8 +180,11 @@ const setSelectedGroup = (index: number) => {
   selectedGroup.value = index;
   if (index === -1) {
     placeholder.value = '在 “ 全部 ” 下搜索';
+    getAllPlans();
   } else {
     const groupName: string = groupOptions.value[index].name;
+    const groupId: string = groupOptions.value[index].id;
+    console.log('====>',groupId)
     placeholder.value = `在 “ ${groupName} ” 下搜索`;
   }
 }
