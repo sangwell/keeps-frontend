@@ -27,7 +27,7 @@
 
       <li v-for="(item, index) in groupOptions" :class="{ active: selectedGroup === index }"
           @click="setSelectedGroup(index)">
-        <MinusOutlined v-if="groupEditable" class="group-delete-icon" @click="deleteGroup"/>
+        <MinusOutlined v-if="groupEditable" class="group-delete-icon" @click="delGroup($event,item.id)"/>
         {{ item.name }} <span class="group-progress">{{ item.progress }}/{{ item.total }}</span></li>
     </ul>
   </div>
@@ -57,7 +57,7 @@
               label="标题"
               name="标题"
             >
-              <a-input v-model:value="formState.title" size="small" style="width: 350px"/>
+              <a-input v-model:value="formState.name" size="small" style="width: 350px"/>
             </a-form-item>
 
             <a-form-item
@@ -72,7 +72,7 @@
               name="分类"
             >
               <a-select
-                v-model:value="formState.group"
+                v-model:value="formState.groupId"
                 size="small"
                 style="width: 350px">
                 <a-select-option v-for="item in groupOptions" :value="item.id">{{ item.name }}</a-select-option>
@@ -86,10 +86,14 @@
               <a-progress :percent="formState.progress" :steps="10" strokeColor="#52c41a" style="width: 350px"/>
               <a-button-group>
                 <a-button @click="decline" size="small">
-                  <template #icon><minus-outlined /></template>
+                  <template #icon>
+                    <minus-outlined/>
+                  </template>
                 </a-button>
                 <a-button @click="increase" size="small">
-                  <template #icon><plus-outlined /></template>
+                  <template #icon>
+                    <plus-outlined/>
+                  </template>
                 </a-button>
               </a-button-group>
             </a-form-item>
@@ -129,7 +133,7 @@
         <template #bodyCell="{ column, record }">
           <template v-if="column.key === 'name'">
             <a :href="record.url" target="_blank">
-              {{ record.title }}
+              {{ record.name }}
             </a>
           </template>
           <template v-else-if="column.key === 'progress'">
@@ -137,7 +141,7 @@
           </template>
           <template v-else-if="column.key === 'action'">
             <EditOutlined class="action-icon"/>
-            <CloseOutlined class="action-icon"/>
+            <CloseOutlined class="action-icon" @click="delPlan(record.id)"/>
           </template>
         </template>
       </a-table>
@@ -146,7 +150,7 @@
 </template>
 
 <script setup lang="ts">
-import {ref, reactive} from 'vue';
+import {ref, reactive, onMounted} from 'vue';
 import {
   PlusOutlined,
   CloseOutlined,
@@ -155,11 +159,12 @@ import {
   MinusOutlined,
   CheckOutlined
 } from '@ant-design/icons-vue';
+import {addGroup, getGroups, deleteGroup, getPlans, addPlan, deletePlan} from "@/axios";
 
 interface FormState {
-  title: string;
+  name: string;
   url: string;
-  group: string;
+  groupId: string;
   progress: number;
 }
 
@@ -196,9 +201,17 @@ const toggleGroupEditable = () => {
   groupEditable.value = !groupEditable.value;
 }
 
-const deleteGroup = (event: any) => {
+const delGroup = (event: any, id: string) => {
   event.stopPropagation(); // 阻止事件冒泡
-  console.log('Icon clicked!');
+  deleteGroup(id).then(() => {
+    getAllGroups();
+  });
+}
+
+const delPlan = (id: string) => {
+  deletePlan(id).then(() => {
+    getAllPlans();
+  });
 }
 
 const handleGroupChange = (isOpen: boolean) => {
@@ -207,60 +220,40 @@ const handleGroupChange = (isOpen: boolean) => {
   }
 }
 const saveGroup = () => {
-  addGroupVisible.value = false;
+  addGroup({name: newGroup.value}).then(() => {
+    addGroupVisible.value = false;
+    getAllGroups();
+  });
 };
 
 const handlePlanChange = (isOpen: boolean) => {
   if (isOpen) {
-    formState.title = '';
+    formState.name = '';
     formState.url = '';
-    formState.group = '';
+    formState.groupId = '';
+    formState.progress = 0;
   }
 }
 const savePlan = () => {
+  addPlan(formState).then(() => {
+    getAllPlans();
+  })
   addPlanVisible.value = false;
 };
 const formState = reactive<FormState>({
-  title: '',
+  name: '',
   url: '',
-  group: '',
+  groupId: '',
   progress: 0
 });
 
-const groupOptions = ref([
+const groupOptions = ref([]);
+// before
+/*const groupOptions = ref([
   {id: '1', name: '掘金小册', total: 10, progress: 2},
   {id: '2', name: 'JavaScript', total: 16, progress: 9},
-  {id: '3', name: 'React Native', total: 23, progress: 2},
-  {id: '4', name: 'VUE', total: 10, progress: 5},
-  {id: '1', name: '掘金小册', total: 10, progress: 2},
-  {id: '2', name: 'JavaScript', total: 16, progress: 9},
-  {id: '3', name: 'React Native React Native React Native', total: 23, progress: 2},
-  {id: '4', name: 'VUE', total: 10, progress: 5},
-  {id: '1', name: '掘金小册', total: 10, progress: 2},
-  {id: '2', name: 'JavaScript', total: 16, progress: 9},
-  {id: '3', name: 'React Native', total: 23, progress: 2},
-  {id: '4', name: 'VUE', total: 10, progress: 5},
-  {id: '1', name: '掘金小册', total: 10, progress: 2},
-  {id: '2', name: 'JavaScript', total: 16, progress: 9},
-  {id: '3', name: 'React Native', total: 23, progress: 2},
-  {id: '4', name: 'VUE', total: 10, progress: 5},
-  {id: '1', name: '掘金小册', total: 10, progress: 2},
-  {id: '2', name: 'JavaScript', total: 16, progress: 9},
-  {id: '3', name: 'React Native', total: 23, progress: 2},
-  {id: '4', name: 'VUE', total: 10, progress: 5},
-  {id: '1', name: '掘金小册', total: 10, progress: 2},
-  {id: '2', name: 'JavaScript', total: 16, progress: 9},
-  {id: '3', name: 'React Native React Native React Native', total: 23, progress: 2},
-  {id: '4', name: 'VUE', total: 10, progress: 5},
-  {id: '1', name: '掘金小册', total: 10, progress: 2},
-  {id: '2', name: 'JavaScript', total: 16, progress: 9},
-  {id: '3', name: 'React Native', total: 23, progress: 2},
-  {id: '4', name: 'VUE', total: 10, progress: 5},
-  {id: '1', name: '掘金小册', total: 10, progress: 2},
-  {id: '2', name: 'JavaScript', total: 16, progress: 9},
-  {id: '3', name: 'React Native', total: 23, progress: 2},
-  {id: '4', name: 'VUE', total: 10, progress: 5},
-]);
+  {id: '3', name: 'React Native', total: 23, progress: 2}
+]);*/
 
 const onFinish = (values: any) => {
   console.log('Success:', values);
@@ -288,7 +281,8 @@ const columns = [
   }
 ];
 
-const data = [
+const data = ref([]);
+/*const data = [
   {
     key: '1',
     title: '想成为中高级前端，必须理解这10种javascript设计模式',
@@ -299,146 +293,31 @@ const data = [
     key: '2',
     title: '28个令人惊艳的JavaScript单行代码',
     url: 'https://juejin.cn/post/7307963529872605218Ò',
-    progress: 40
-  },
-  {
-    key: '3',
-    title: '前端必会，教你从 0 开始使用 docker + nginx 部署项目，太赞了',
-    url: 'https://juejin.cn/post/7390735346847907874',
-    progress: 40
-  },
-  {
-    key: '1',
-    title: '想成为中高级前端，必须理解这10种javascript设计模式',
-    url: 'https://juejin.cn/post/7433277439634096168',
-    progress: 30
-  },
-  {
-    key: '2',
-    title: '28个令人惊艳的JavaScript单行代码',
-    url: 'https://juejin.cn/post/7307963529872605218Ò',
-    progress: 40
-  },
-  {
-    key: '3',
-    title: '前端必会，教你从 0 开始使用 docker + nginx 部署项目，太赞了',
-    url: 'https://juejin.cn/post/7390735346847907874',
-    progress: 40
-  },
-  {
-    key: '1',
-    title: '想成为中高级前端，必须理解这10种javascript设计模式',
-    url: 'https://juejin.cn/post/7433277439634096168',
-    progress: 30
-  },
-  {
-    key: '2',
-    title: '28个令人惊艳的JavaScript单行代码',
-    url: 'https://juejin.cn/post/7307963529872605218Ò',
-    progress: 40
-  },
-  {
-    key: '3',
-    title: '前端必会，教你从 0 开始使用 docker + nginx 部署项目，太赞了',
-    url: 'https://juejin.cn/post/7390735346847907874',
-    progress: 40
-  },
-  {
-    key: '1',
-    title: '想成为中高级前端，必须理解这10种javascript设计模式',
-    url: 'https://juejin.cn/post/7433277439634096168',
-    progress: 30
-  },
-  {
-    key: '2',
-    title: '28个令人惊艳的JavaScript单行代码',
-    url: 'https://juejin.cn/post/7307963529872605218Ò',
-    progress: 40
-  },
-  {
-    key: '3',
-    title: '前端必会，教你从 0 开始使用 docker + nginx 部署项目，太赞了',
-    url: 'https://juejin.cn/post/7390735346847907874',
-    progress: 40
-  },
-  {
-    key: '1',
-    title: '想成为中高级前端，必须理解这10种javascript设计模式',
-    url: 'https://juejin.cn/post/7433277439634096168',
-    progress: 30
-  },
-  {
-    key: '2',
-    title: '28个令人惊艳的JavaScript单行代码',
-    url: 'https://juejin.cn/post/7307963529872605218Ò',
-    progress: 40
-  },
-  {
-    key: '3',
-    title: '前端必会，教你从 0 开始使用 docker + nginx 部署项目，太赞了',
-    url: 'https://juejin.cn/post/7390735346847907874',
-    progress: 40
-  },
-  {
-    key: '1',
-    title: '想成为中高级前端，必须理解这10种javascript设计模式',
-    url: 'https://juejin.cn/post/7433277439634096168',
-    progress: 30
-  },
-  {
-    key: '2',
-    title: '28个令人惊艳的JavaScript单行代码',
-    url: 'https://juejin.cn/post/7307963529872605218Ò',
-    progress: 40
-  },
-  {
-    key: '3',
-    title: '前端必会，教你从 0 开始使用 docker + nginx 部署项目，太赞了',
-    url: 'https://juejin.cn/post/7390735346847907874',
-    progress: 40
-  },
-  {
-    key: '1',
-    title: '想成为中高级前端，必须理解这10种javascript设计模式',
-    url: 'https://juejin.cn/post/7433277439634096168',
-    progress: 30
-  },
-  {
-    key: '2',
-    title: '28个令人惊艳的JavaScript单行代码',
-    url: 'https://juejin.cn/post/7307963529872605218Ò',
-    progress: 40
-  },
-  {
-    key: '3',
-    title: '前端必会，教你从 0 开始使用 docker + nginx 部署项目，太赞了',
-    url: 'https://juejin.cn/post/7390735346847907874',
-    progress: 40
-  },
-  {
-    key: '1',
-    title: '想成为中高级前端，必须理解这10种javascript设计模式',
-    url: 'https://juejin.cn/post/7433277439634096168',
-    progress: 30
-  },
-  {
-    key: '2',
-    title: '28个令人惊艳的JavaScript单行代码',
-    url: 'https://juejin.cn/post/7307963529872605218Ò',
-    progress: 40
-  },
-  {
-    key: '3',
-    title: '前端必会，教你从 0 开始使用 docker + nginx 部署项目，太赞了',
-    url: 'https://juejin.cn/post/7390735346847907874',
     progress: 40
   }
-];
+];*/
 
 const onSearch = (searchValue: string) => {
   console.log('use value', searchValue);
   console.log('or use this.value', value.value);
 };
+
+const getAllGroups = () => {
+  getGroups().then((res: any) => {
+    groupOptions.value = res.data;
+  })
+}
+
+const getAllPlans = () => {
+  getPlans().then((res: any) => {
+    data.value = res.data;
+  })
+}
+
+onMounted(() => {
+  getAllGroups();
+  getAllPlans();
+})
 
 </script>
 
@@ -546,11 +425,8 @@ const onSearch = (searchValue: string) => {
   li {
     display: block;
     font-size: 14px;
-    font-weight: bold;
-    //margin: 12px 0;
     padding: 4px 0px 4px 8px;
     cursor: pointer;
-    //color: #00000050;
     position: relative;
   }
 }
@@ -589,7 +465,6 @@ const onSearch = (searchValue: string) => {
 
 .group-progress {
   display: inline-block;
-  //background: #4fb020;
   color: #959595;
   font-size: 10px;
   border-radius: 4px;
