@@ -28,7 +28,7 @@
       <li v-for="(item, index) in groupOptions" :class="{ active: selectedGroup === index }"
           @click="setSelectedGroup(index)">
         <MinusOutlined v-if="groupEditable" class="group-delete-icon" @click="delGroup($event,item.id)"/>
-        {{ item.name }} <span class="group-progress">{{ item.progress }}/{{ item.total }}</span></li>
+        {{ item.name }} <span class="group-progress">{{ item.total }}</span></li>
     </ul>
   </div>
 
@@ -159,7 +159,7 @@ import {
   MinusOutlined,
   CheckOutlined
 } from '@ant-design/icons-vue';
-import {addGroup, getGroups, deleteGroup, getPlans, addPlan, deletePlan} from "@/axios";
+import {addGroup, getGroups, deleteGroup, getPlans, addPlan, deletePlan, getPlansByGroupId} from "@/axios";
 
 interface FormState {
   name: string;
@@ -184,7 +184,7 @@ const setSelectedGroup = (index: number) => {
   } else {
     const groupName: string = groupOptions.value[index].name;
     const groupId: string = groupOptions.value[index].id;
-    console.log('====>',groupId)
+    getAllPlansByGroupId(groupId);
     placeholder.value = `在 “ ${groupName} ” 下搜索`;
   }
 }
@@ -200,7 +200,6 @@ const decline = () => {
 };
 
 const toggleGroupEditable = () => {
-  console.log(111)
   groupEditable.value = !groupEditable.value;
 }
 
@@ -239,7 +238,12 @@ const handlePlanChange = (isOpen: boolean) => {
 }
 const savePlan = () => {
   addPlan(formState).then(() => {
-    getAllPlans();
+    if (selectedGroup.value === -1) {
+      getAllPlans();
+    } else {
+      const groupId: string = groupOptions.value[selectedGroup.value].id;
+      getAllPlansByGroupId(groupId);
+    }
   })
   addPlanVisible.value = false;
 };
@@ -317,6 +321,12 @@ const getAllPlans = () => {
   })
 }
 
+const getAllPlansByGroupId = (groupId: string) => {
+  getPlansByGroupId(groupId).then((res: any) => {
+    data.value = res.data;
+  })
+}
+
 onMounted(() => {
   getAllGroups();
   getAllPlans();
@@ -387,7 +397,7 @@ onMounted(() => {
 }
 
 .all-group {
-  width: 200px;
+  width: 196px;
 }
 
 .save-btn-layout {
@@ -428,7 +438,7 @@ onMounted(() => {
   li {
     display: block;
     font-size: 14px;
-    padding: 4px 0px 4px 8px;
+    padding: 4px 4px 4px 8px;
     cursor: pointer;
     position: relative;
   }
@@ -468,11 +478,13 @@ onMounted(() => {
 
 .group-progress {
   display: inline-block;
-  color: #959595;
+  color: #ffffff;
   font-size: 10px;
+  font-weight: bold;
   border-radius: 4px;
-  padding: 3px 4px;
+  padding: 3px 6px;
   float: right;
+  background: #52c41a;
 }
 
 a {

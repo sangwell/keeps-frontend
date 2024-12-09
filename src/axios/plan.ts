@@ -8,6 +8,13 @@ export function getPlans() {
 }
 
 /**
+ * 根据groupId查询学习计划
+ */
+export function getPlansByGroupId(groupId: string) {
+  return axios.get(`http://localhost:8066/plansByGroupId/${groupId}`);
+}
+
+/**
  * 新增计划
  */
 export function addPlan(data: any) {
