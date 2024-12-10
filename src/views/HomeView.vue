@@ -100,19 +100,25 @@
               label="进度"
               name="进度"
             >
-              <a-progress :percent="formState.progress" :steps="10" strokeColor="#52c41a" style="width: 350px"/>
-              <a-button-group>
-                <a-button @click="decline" size="small">
+              <div class="progress-layout">
+                <div class="left-btn">
+                  <a-button @click="decline" size="small">
                   <template #icon>
                     <minus-outlined/>
                   </template>
                 </a-button>
-                <a-button @click="increase" size="small">
-                  <template #icon>
-                    <plus-outlined/>
-                  </template>
-                </a-button>
-              </a-button-group>
+                </div>
+                <div>
+                  <a-progress :percent="formState.progress" :steps="10" strokeColor="#52c41a"/>
+                </div>
+                <div>
+                  <a-button @click="increase" size="small">
+                    <template #icon>
+                      <plus-outlined/>
+                    </template>
+                  </a-button>
+                </div>
+              </div>
             </a-form-item>
           </a-form>
           <div class="save-btn-layout">
@@ -479,6 +485,13 @@ onMounted(() => {
 /* 修改滚动条的轨道样式 */
 ::-webkit-scrollbar-track {
   background-color: #f1f1f1; /* 轨道颜色 */
+}
+
+.progress-layout{
+  display: flex;
+  .left-btn{
+    margin-right: 10px;
+  }
 }
 
 .menu {
