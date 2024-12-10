@@ -22,6 +22,13 @@ export function addPlan(data: any) {
 }
 
 /**
+ * 修改计划
+ */
+export function updatePlan(data: any) {
+  return axios.put('http://localhost:8066/updatePlan', data);
+}
+
+/**
  * 删除计划
  */
 export function deletePlan(id: string) {

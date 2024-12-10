@@ -19,7 +19,7 @@
         <template #content>
           <a-input v-model:value="newGroup" size="small"/>
           <div class="save-btn-layout">
-            <a-button type="primary" size="small" class="save-btn" @click="saveGroup">保存</a-button>
+            <a-button type="primary" size="small" class="save-btn" @click="saveGroup">确认</a-button>
           </div>
         </template>
         <plus-outlined class="add-btn"/>
@@ -64,7 +64,13 @@
               label="链接"
               name="链接"
             >
-              <a-input v-model:value="formState.url" size="small" style="width: 350px"/>
+              <!--              <a-input v-model:value="formState.url" size="small" style="width: 350px"/>-->
+              <a-textarea
+                v-model:value="formState.url"
+                size="small"
+                style="width: 350px;max-width: 350px"
+                :auto-size="{ minRows: 2, maxRows: 5 }"
+              />
             </a-form-item>
 
             <a-form-item
@@ -99,7 +105,7 @@
             </a-form-item>
           </a-form>
           <div class="save-btn-layout">
-            <a-button type="primary" size="small" class="save-btn" @click="savePlan">保存</a-button>
+            <a-button type="primary" size="small" class="save-btn" @click="savePlan">确认</a-button>
           </div>
         </template>
         <a-button type="primary" shape="circle" class="float-right">
@@ -110,7 +116,8 @@
       </a-popover>
     </div>
     <div class="table-content">
-      <a-table :columns="columns" :data-source="data" size="small" :pagination="{ pageSize: 15 }"
+      <a-table :columns="columns" :data-source="data" size="small" :locale="{ emptyText: '暂无数据' }"
+               :pagination="{ pageSize: 15 }"
       >
         <template #headerCell="{ column }">
           <template v-if="column.key === 'name'">
@@ -141,12 +148,20 @@
           </template>
           <template v-else-if="column.key === 'action'">
             <EditOutlined class="action-icon" @click="editPlan(record)"/>
-            <CloseOutlined class="action-icon" @click="delPlan(record.id)"/>
+            <a-popconfirm title="确认删除？" cancelText="取消" okText="确认" @confirm="delPlan(record.id)">
+              <template #icon>
+                <question-circle-outlined style="color: red"/>
+              </template>
+              <CloseOutlined class="action-icon"/>
+            </a-popconfirm>
+
           </template>
         </template>
       </a-table>
     </div>
   </div>
+
+  <EditPlanModal ref="editPlanModal"/>
 </template>
 
 <script setup lang="ts">
@@ -157,9 +172,11 @@ import {
   EditOutlined,
   SettingOutlined,
   MinusOutlined,
-  CheckOutlined
+  CheckOutlined,
+  QuestionCircleOutlined
 } from '@ant-design/icons-vue';
 import {addGroup, getGroups, deleteGroup, getPlans, addPlan, deletePlan, getPlansByGroupId} from "@/axios";
+import EditPlanModal from "@/components/EditPlanModal.vue";
 
 interface FormState {
   name: string;
@@ -168,6 +185,7 @@ interface FormState {
   progress: number;
 }
 
+const editPlanModal = ref();
 const value = ref<string>('');
 const newGroup = ref<string>('');
 const placeholder = ref<string>('在 “ 全部 ” 下搜索');
@@ -175,6 +193,7 @@ const addGroupVisible = ref<boolean>(false);
 const addPlanVisible = ref<boolean>(false);
 const selectedGroup = ref<number>(-1);
 const groupEditable = ref<boolean>(false);
+const groupOptions = ref<any[]>([]);
 
 const setSelectedGroup = (index: number) => {
   selectedGroup.value = index;
@@ -208,6 +227,10 @@ const delGroup = (event: any, id: string) => {
   deleteGroup(id).then(() => {
     getAllGroups();
   });
+}
+
+const editPlan = (plan: any) => {
+  editPlanModal.value.open(plan, groupOptions.value);
 }
 
 const delPlan = (id: string) => {
@@ -254,7 +277,6 @@ const formState = reactive<FormState>({
   progress: 0
 });
 
-const groupOptions = ref([]);
 // before
 /*const groupOptions = ref([
   {id: '1', name: '掘金小册', total: 10, progress: 2},
@@ -397,7 +419,7 @@ onMounted(() => {
 }
 
 .all-group {
-  width: 196px;
+  width: 192px;
 }
 
 .save-btn-layout {
@@ -438,7 +460,7 @@ onMounted(() => {
   li {
     display: block;
     font-size: 14px;
-    padding: 4px 4px 4px 8px;
+    padding: 8px 6px 8px 8px;
     cursor: pointer;
     position: relative;
   }
@@ -463,7 +485,7 @@ onMounted(() => {
   float: right;
   cursor: pointer;
   font-size: 16px;
-  margin-top: -22px;
+  margin-top: -25px;
   margin-right: 26px;
 }
 
@@ -472,17 +494,17 @@ onMounted(() => {
   float: right;
   cursor: pointer;
   font-size: 16px;
-  margin-top: -22px;
+  margin-top: -25px;
   margin-left: 10px;
 }
 
 .group-progress {
   display: inline-block;
   color: #ffffff;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: bold;
   border-radius: 4px;
-  padding: 3px 6px;
+  padding: 1px 6px;
   float: right;
   background: #52c41a;
 }
