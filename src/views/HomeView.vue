@@ -26,10 +26,20 @@
 
       <li v-for="(item, index) in groupOptions" :class="{ active: selectedGroup === index }"
           @click="setSelectedGroup(index)">
-        <a-popconfirm placement="right" title="确认删除？" ok-text="删除" cancel-text="取消" @confirm="delGroup($event,item)">
+        <a-popconfirm placement="right" title="确认删除？" ok-text="删除" cancel-text="取消"
+                      @confirm="delGroup($event,item)">
           <MinusOutlined v-if="groupEditable" class="group-delete-icon"/>
         </a-popconfirm>
-        <EditOutlined class="group-edit-icon"/>
+        <a-popover :visible="editingGroupIndex === index" placement="right" title="修改名称" trigger="click">
+          <template #content>
+            <a-input v-model:value="selectedGroupName" size="small"/>
+            <div class="save-btn-layout">
+              <a-button type="primary" size="small" class="save-btn" @click="saveGroupName">确认</a-button>
+            </div>
+          </template>
+          <EditOutlined v-if="groupEditable" class="group-edit-icon" @click="editGroup($event,item,index)"/>
+        </a-popover>
+
         {{ item.name }} <span class="group-progress">{{ item.total }}</span></li>
     </ul>
   </div>
@@ -176,7 +186,16 @@ import {
   CheckOutlined,
   QuestionCircleOutlined
 } from '@ant-design/icons-vue';
-import {addGroup, getGroups, deleteGroup, getPlans, addPlan, deletePlan, getPlansByGroupId} from "@/axios";
+import {
+  addGroup,
+  getGroups,
+  deleteGroup,
+  getPlans,
+  addPlan,
+  deletePlan,
+  getPlansByGroupId,
+  updateGroupName
+} from "@/axios";
 import EditPlanModal from "@/components/EditPlanModal.vue";
 
 interface FormState {
@@ -189,6 +208,9 @@ interface FormState {
 const editPlanModal = ref();
 const value = ref<string>('');
 const newGroup = ref<string>('');
+const selectedGroupName = ref<string>('');
+const selectedGroupId = ref<string>('');
+const editingGroupIndex = ref<number>(-1);
 const placeholder = ref<string>('在 “ 全部 ” 下搜索');
 const addGroupVisible = ref<boolean>(false);
 const addPlanVisible = ref<boolean>(false);
@@ -234,6 +256,13 @@ const delGroup = (event: any, group: any) => {
   });
 }
 
+const editGroup = (event: any, group: any, index: number) => {
+  event.stopPropagation(); // 阻止事件冒泡
+  selectedGroupName.value = group.name;
+  selectedGroupId.value = group.id;
+  editingGroupIndex.value = index;
+}
+
 const editPlan = (plan: any) => {
   editPlanModal.value.open(plan, groupOptions.value);
 }
@@ -255,6 +284,17 @@ const saveGroup = () => {
     getAllGroups();
   });
 };
+
+
+const saveGroupName = () => {
+  const id = selectedGroupId.value;
+  const name = selectedGroupName.value;
+  updateGroupName({id, name}).then(() => {
+    editingGroupIndex.value = -1;
+    getAllGroups();
+  });
+};
+
 
 const getPlansAfterUpdating = () => {
   if (selectedGroup.value === -1) {
@@ -397,12 +437,12 @@ onMounted(() => {
 
   .title {
     color: #52c41a;
-    //text-shadow: 3px 3px 0px #555ed5;
     font-weight: bold;
   }
 
   .slogan {
-    font-size: 12px;
+    font-size: 14px;
+    font-weight: bold;
     color: #2e2e2e;
   }
 }
@@ -458,7 +498,7 @@ onMounted(() => {
 .group-delete-icon {
   position: absolute;
   top: 9px;
-  left: -18px;
+  left: -40px;
   cursor: pointer;
   color: #000000;
 }
@@ -466,7 +506,7 @@ onMounted(() => {
 .group-edit-icon {
   position: absolute;
   top: 9px;
-  left: -40px;
+  left: -18px;
   cursor: pointer;
   color: #000000;
 }

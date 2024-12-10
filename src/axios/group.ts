@@ -15,6 +15,13 @@ export function addGroup(data: any) {
 }
 
 /**
+ * 修改分组名称
+ */
+export function updateGroupName(data: any) {
+  return axios.put('http://localhost:8066/updateGroupName', data);
+}
+
+/**
  * 删除分组
  */
 export function deleteGroup(id: string) {
