@@ -6,7 +6,6 @@
     </div>
     <ul class="menu">
 
-
       <li class="all-group" @click="setSelectedGroup(-1)" :class="{ active: selectedGroup === -1 }">
         全部
       </li>
@@ -27,7 +26,10 @@
 
       <li v-for="(item, index) in groupOptions" :class="{ active: selectedGroup === index }"
           @click="setSelectedGroup(index)">
-        <MinusOutlined v-if="groupEditable" class="group-delete-icon" @click="delGroup($event,item.id)"/>
+        <a-popconfirm placement="right" title="确认删除？" ok-text="删除" cancel-text="取消" @confirm="delGroup($event,item)">
+          <MinusOutlined v-if="groupEditable" class="group-delete-icon"/>
+        </a-popconfirm>
+        <EditOutlined class="group-edit-icon"/>
         {{ item.name }} <span class="group-progress">{{ item.total }}</span></li>
     </ul>
   </div>
@@ -64,7 +66,6 @@
               label="链接"
               name="链接"
             >
-              <!--              <a-input v-model:value="formState.url" size="small" style="width: 350px"/>-->
               <a-textarea
                 v-model:value="formState.url"
                 size="small"
@@ -148,7 +149,7 @@
           </template>
           <template v-else-if="column.key === 'action'">
             <EditOutlined class="action-icon" @click="editPlan(record)"/>
-            <a-popconfirm title="确认删除？" cancelText="取消" okText="确认" @confirm="delPlan(record.id)">
+            <a-popconfirm title="确认删除？" cancelText="取消" okText="删除" @confirm="delPlan(record.id)">
               <template #icon>
                 <question-circle-outlined style="color: red"/>
               </template>
@@ -175,7 +176,7 @@ import {
   CheckOutlined,
   QuestionCircleOutlined
 } from '@ant-design/icons-vue';
-import {addGroup, getGroups, deleteGroup, getPlans, addPlan, deletePlan, getPlansByGroupId, updatePlan} from "@/axios";
+import {addGroup, getGroups, deleteGroup, getPlans, addPlan, deletePlan, getPlansByGroupId} from "@/axios";
 import EditPlanModal from "@/components/EditPlanModal.vue";
 
 interface FormState {
@@ -222,9 +223,13 @@ const toggleGroupEditable = () => {
   groupEditable.value = !groupEditable.value;
 }
 
-const delGroup = (event: any, id: string) => {
+const delGroup = (event: any, group: any) => {
   event.stopPropagation(); // 阻止事件冒泡
-  deleteGroup(id).then(() => {
+  if (group.total > 0) {
+    alert('分组下有数据，禁止删除！');
+    return;
+  }
+  deleteGroup(group.id).then(() => {
     getAllGroups();
   });
 }
@@ -271,12 +276,7 @@ const handlePlanChange = (isOpen: boolean) => {
 const savePlan = () => {
   addPlan(formState).then(() => {
     getPlansAfterUpdating();
-    // if (selectedGroup.value === -1) {
-    //   getAllPlans();
-    // } else {
-    //   const groupId: string = groupOptions.value[selectedGroup.value].id;
-    //   getAllPlansByGroupId(groupId);
-    // }
+    getAllGroups();
   })
   addPlanVisible.value = false;
 };
@@ -286,13 +286,6 @@ const formState = reactive<FormState>({
   groupId: '',
   progress: 0
 });
-
-// before
-/*const groupOptions = ref([
-  {id: '1', name: '掘金小册', total: 10, progress: 2},
-  {id: '2', name: 'JavaScript', total: 16, progress: 9},
-  {id: '3', name: 'React Native', total: 23, progress: 2}
-]);*/
 
 const onFinish = (values: any) => {
   console.log('Success:', values);
@@ -321,20 +314,6 @@ const columns = [
 ];
 
 const data = ref([]);
-/*const data = [
-  {
-    key: '1',
-    title: '想成为中高级前端，必须理解这10种javascript设计模式',
-    url: 'https://juejin.cn/post/7433277439634096168',
-    progress: 30
-  },
-  {
-    key: '2',
-    title: '28个令人惊艳的JavaScript单行代码',
-    url: 'https://juejin.cn/post/7307963529872605218Ò',
-    progress: 40
-  }
-];*/
 
 const onSearch = (searchValue: string) => {
   console.log('use value', searchValue);
@@ -478,8 +457,16 @@ onMounted(() => {
 
 .group-delete-icon {
   position: absolute;
-  top: 7px;
+  top: 9px;
   left: -18px;
+  cursor: pointer;
+  color: #000000;
+}
+
+.group-edit-icon {
+  position: absolute;
+  top: 9px;
+  left: -40px;
   cursor: pointer;
   color: #000000;
 }
