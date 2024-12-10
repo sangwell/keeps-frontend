@@ -161,7 +161,7 @@
     </div>
   </div>
 
-  <EditPlanModal ref="editPlanModal"/>
+  <EditPlanModal ref="editPlanModal" @update-success="getPlansAfterUpdating"/>
 </template>
 
 <script setup lang="ts">
@@ -175,7 +175,7 @@ import {
   CheckOutlined,
   QuestionCircleOutlined
 } from '@ant-design/icons-vue';
-import {addGroup, getGroups, deleteGroup, getPlans, addPlan, deletePlan, getPlansByGroupId} from "@/axios";
+import {addGroup, getGroups, deleteGroup, getPlans, addPlan, deletePlan, getPlansByGroupId, updatePlan} from "@/axios";
 import EditPlanModal from "@/components/EditPlanModal.vue";
 
 interface FormState {
@@ -251,6 +251,15 @@ const saveGroup = () => {
   });
 };
 
+const getPlansAfterUpdating = () => {
+  if (selectedGroup.value === -1) {
+    getAllPlans();
+  } else {
+    const groupId: string = groupOptions.value[selectedGroup.value].id;
+    getAllPlansByGroupId(groupId);
+  }
+}
+
 const handlePlanChange = (isOpen: boolean) => {
   if (isOpen) {
     formState.name = '';
@@ -261,12 +270,13 @@ const handlePlanChange = (isOpen: boolean) => {
 }
 const savePlan = () => {
   addPlan(formState).then(() => {
-    if (selectedGroup.value === -1) {
-      getAllPlans();
-    } else {
-      const groupId: string = groupOptions.value[selectedGroup.value].id;
-      getAllPlansByGroupId(groupId);
-    }
+    getPlansAfterUpdating();
+    // if (selectedGroup.value === -1) {
+    //   getAllPlans();
+    // } else {
+    //   const groupId: string = groupOptions.value[selectedGroup.value].id;
+    //   getAllPlansByGroupId(groupId);
+    // }
   })
   addPlanVisible.value = false;
 };

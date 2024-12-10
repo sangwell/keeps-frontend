@@ -19,7 +19,6 @@
         label="链接"
         name="链接"
       >
-        <!--              <a-input v-model:value="formState.url" size="small" style="width: 350px"/>-->
         <a-textarea
           v-model:value="formState.url"
           size="small"
@@ -75,6 +74,8 @@ interface FormState {
   progress: number;
 }
 
+const emits = defineEmits(['update-success']);
+
 const open = ref<boolean>(false);
 const groupOptions = ref<any[]>([]);
 
@@ -103,6 +104,7 @@ const showModal = () => {
 const handleOk = () => {
   updatePlan(formState).then(() => {
     open.value = false;
+    emits('update-success');
   })
 };
 
