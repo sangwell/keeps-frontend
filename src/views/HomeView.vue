@@ -401,7 +401,7 @@ const getAllPlansByGroupId = (groupId: string) => {
 
 const confirmBackUp = () => {
   backup().then(() => {
-    console.log('备份成功！');
+    alert('备份成功！');
   })
 }
 
