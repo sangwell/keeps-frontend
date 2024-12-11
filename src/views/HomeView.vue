@@ -42,6 +42,19 @@
 
         {{ item.name }} <span class="group-progress">{{ item.total }}</span></li>
     </ul>
+
+    <div class="user-info">
+
+      <a-popconfirm
+        title="确认备份？"
+        ok-text="确认"
+        cancel-text="取消"
+        @confirm="confirmBackUp"
+      >
+        <a-button type="primary">数据库备份</a-button>
+      </a-popconfirm>
+
+    </div>
   </div>
 
   <div class="right-content">
@@ -52,6 +65,7 @@
         style="width: 400px"
         @search="onSearch"
       />
+
       <a-popover v-model:visible="addPlanVisible" @openChange="handlePlanChange" title="添加“学习计划”" trigger="click"
                  placement="leftTop">
         <template #content>
@@ -103,10 +117,10 @@
               <div class="progress-layout">
                 <div class="left-btn">
                   <a-button @click="decline" size="small">
-                  <template #icon>
-                    <minus-outlined/>
-                  </template>
-                </a-button>
+                    <template #icon>
+                      <minus-outlined/>
+                    </template>
+                  </a-button>
                 </div>
                 <div>
                   <a-progress :percent="formState.progress" :steps="10" strokeColor="#52c41a"/>
@@ -200,7 +214,7 @@ import {
   addPlan,
   deletePlan,
   getPlansByGroupId,
-  updateGroupName
+  updateGroupName, backup
 } from "@/axios";
 import EditPlanModal from "@/components/EditPlanModal.vue";
 
@@ -275,7 +289,8 @@ const editPlan = (plan: any) => {
 
 const delPlan = (id: string) => {
   deletePlan(id).then(() => {
-    getAllPlans();
+    getPlansAfterUpdating();
+    getAllGroups();
   });
 }
 
@@ -384,6 +399,12 @@ const getAllPlansByGroupId = (groupId: string) => {
   })
 }
 
+const confirmBackUp = () => {
+  backup().then(() => {
+    console.log('备份成功！');
+  })
+}
+
 onMounted(() => {
   getAllGroups();
   getAllPlans();
@@ -487,17 +508,19 @@ onMounted(() => {
   background-color: #f1f1f1; /* 轨道颜色 */
 }
 
-.progress-layout{
+.progress-layout {
   display: flex;
-  .left-btn{
+
+  .left-btn {
     margin-right: 10px;
   }
 }
 
 .menu {
-  height: calc(100vh - 158px);
-  overflow-y: scroll;
-  padding: 10px 20px 10px 70px;
+  height: calc(100vh - 260px);
+  overflow-y: auto;
+  padding: 22px 20px 10px 70px;
+  margin: 0;
 
   li {
     display: block;
@@ -506,6 +529,14 @@ onMounted(() => {
     cursor: pointer;
     position: relative;
   }
+}
+
+.user-info {
+  height: 106px;
+  border-top: 1px solid #d5d5d5;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .group-delete-icon {
@@ -561,10 +592,14 @@ onMounted(() => {
 
 a {
   color: #000000;
+  font-weight: bold;
+  font-size: 16px;
 }
 
 a:hover {
   text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
 }
 
 .float-right {
