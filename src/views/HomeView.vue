@@ -158,27 +158,27 @@
       >
         <template #headerCell="{ column }">
           <template v-if="column.key === 'name'">
-            <span>
+            <span class="column-name">
               学习计划
             </span>
           </template>
           <template v-if="column.key === 'group'">
-            <span>
+            <span class="column-name">
               分类
             </span>
           </template>
           <template v-if="column.key === 'createTime'">
-            <span>
+            <span class="column-name">
               创建时间
             </span>
           </template>
           <template v-if="column.key === 'progress'">
-            <span>
+            <span class="column-name">
               进度
             </span>
           </template>
           <template v-if="column.key === 'action'">
-            <span>
+            <span class="column-name">
               操作
             </span>
           </template>
@@ -459,6 +459,10 @@ onMounted(() => {
   height: 100vh;
   position: relative;
   float: left;
+}
+
+.column-name {
+  font-size: 16px;
 }
 
 .ant-form-item {
