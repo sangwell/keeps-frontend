@@ -132,6 +132,11 @@
                     </template>
                   </a-button>
                 </div>
+                <div style="margin-left: 39px;">
+                  <a-button type="primary" @click="setPlanDone" size="small">
+                    100%
+                  </a-button>
+                </div>
               </div>
             </a-form-item>
           </a-form>
@@ -146,6 +151,7 @@
         </a-button>
       </a-popover>
     </div>
+
     <div class="table-content">
       <a-table :columns="columns" :data-source="data" size="small" :locale="{ emptyText: '暂无数据' }"
                :pagination="{ pageSize: 15 }"
@@ -154,6 +160,16 @@
           <template v-if="column.key === 'name'">
             <span>
               学习计划
+            </span>
+          </template>
+          <template v-if="column.key === 'group'">
+            <span>
+              分类
+            </span>
+          </template>
+          <template v-if="column.key === 'createTime'">
+            <span>
+              创建时间
             </span>
           </template>
           <template v-if="column.key === 'progress'">
@@ -173,6 +189,12 @@
             <a :href="record.url" target="_blank">
               {{ record.name }}
             </a>
+          </template>
+          <template v-else-if="column.key === 'group'">
+            <span class="group-name-style">{{ record.groupName }}</span>
+          </template>
+          <template v-else-if="column.key === 'createTime'">
+            {{ $formatDate(record.timestamp) }}
           </template>
           <template v-else-if="column.key === 'progress'">
             <a-progress :percent="record.progress" :steps="10" strokeColor="#52c41a"/>
@@ -299,6 +321,11 @@ const handleGroupChange = (isOpen: boolean) => {
     newGroup.value = '';
   }
 }
+
+const setPlanDone = () => {
+  formState.progress = 100;
+}
+
 const saveGroup = () => {
   addGroup({name: newGroup.value}).then(() => {
     addGroupVisible.value = false;
@@ -335,6 +362,9 @@ const handlePlanChange = (isOpen: boolean) => {
   }
 }
 const savePlan = () => {
+  if (!formState.name || !formState.url || !formState.groupId) {
+    return;
+  }
   addPlan(formState).then(() => {
     getPlansAfterUpdating();
     getAllGroups();
@@ -361,6 +391,16 @@ const columns = [
     name: 'Name',
     dataIndex: 'name',
     key: 'name',
+  },
+  {
+    name: 'Group',
+    dataIndex: 'group',
+    key: 'group',
+  },
+  {
+    name: 'CreateTime',
+    dataIndex: 'createTime',
+    key: 'createTime',
   },
   {
     title: 'Progress',
@@ -447,6 +487,15 @@ onMounted(() => {
   .table-content {
     padding: 0 40px;
   }
+}
+
+.group-name-style {
+  background: #52c41a;
+  color: #ffffff;
+  font-size: 12px;
+  padding: 2px 4px;
+  border-radius: 4px;
+  font-weight: bold;
 }
 
 .logo {
@@ -604,5 +653,13 @@ a:hover {
 
 .float-right {
   float: right;
+}
+
+/deep/ .ant-pagination-item-active a {
+  color: #52c41a; /* 设置你想要的文本颜色 */
+}
+
+/deep/ .ant-pagination-item-active {
+  border-color: #52c41a;
 }
 </style>
