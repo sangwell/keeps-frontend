@@ -43,7 +43,31 @@
         label="进度"
         name="进度"
       >
-        <a-progress :percent="formState.progress" :steps="10" strokeColor="#52c41a" style="width: 350px"/>
+        <div class="progress-layout">
+          <div class="left-btn">
+            <a-button @click="decline" size="small">
+              <template #icon>
+                <minus-outlined/>
+              </template>
+            </a-button>
+          </div>
+          <div>
+            <a-progress :percent="formState.progress" :steps="10" strokeColor="#52c41a"/>
+          </div>
+          <div>
+            <a-button @click="increase" size="small">
+              <template #icon>
+                <plus-outlined/>
+              </template>
+            </a-button>
+          </div>
+          <div style="margin-left: 39px;">
+            <a-button type="primary" @click="setPlanDone" size="small">
+              100%
+            </a-button>
+          </div>
+        </div>
+        <!--        <a-progress :percent="formState.progress" :steps="10" strokeColor="#52c41a" style="width: 350px"/>
         <a-button-group>
           <a-button @click="decline" size="small">
             <template #icon>
@@ -55,7 +79,7 @@
               <plus-outlined/>
             </template>
           </a-button>
-        </a-button-group>
+        </a-button-group>-->
       </a-form-item>
     </a-form>
   </a-modal>
@@ -97,6 +121,10 @@ const decline = () => {
   formState.progress = percent < 0 ? 0 : percent;
 };
 
+const setPlanDone = () => {
+  formState.progress = 100;
+}
+
 const showModal = () => {
   open.value = true;
 };
@@ -122,6 +150,14 @@ defineExpose({
 </script>
 
 <style scoped>
+.progress-layout {
+  display: flex;
+
+  .left-btn {
+    margin-right: 10px;
+  }
+}
+
 .ant-form-item {
   margin-bottom: 10px;
 }
