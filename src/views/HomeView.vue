@@ -40,7 +40,7 @@
           <EditOutlined v-if="groupEditable" class="group-edit-icon" @click="editGroup($event,item,index)"/>
         </a-popover>
 
-        {{ item.name }} <span class="group-progress">{{ item.total }}</span></li>
+        {{ item.name }} <span v-if="item.total" class="group-progress">{{ item.total }}</span></li>
     </ul>
 
     <div class="user-info">
