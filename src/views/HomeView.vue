@@ -499,7 +499,6 @@ onMounted(() => {
   font-size: 12px;
   padding: 2px 4px;
   border-radius: 4px;
-  font-weight: bold;
 }
 
 .logo {
@@ -578,7 +577,7 @@ onMounted(() => {
   li {
     display: block;
     font-size: 14px;
-    padding: 8px 6px 8px 8px;
+    padding: 4px 6px 4px 8px;
     cursor: pointer;
     position: relative;
   }
@@ -619,7 +618,7 @@ onMounted(() => {
   float: right;
   cursor: pointer;
   font-size: 16px;
-  margin-top: -25px;
+  margin-top: -22px;
   margin-right: 26px;
 }
 
@@ -628,7 +627,7 @@ onMounted(() => {
   float: right;
   cursor: pointer;
   font-size: 16px;
-  margin-top: -25px;
+  margin-top: -22px;
   margin-left: 10px;
 }
 
@@ -645,7 +644,6 @@ onMounted(() => {
 
 a {
   color: #000000;
-  font-weight: bold;
   font-size: 16px;
 }
 
