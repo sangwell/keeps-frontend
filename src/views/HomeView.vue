@@ -40,7 +40,9 @@
           <EditOutlined v-if="groupEditable" class="group-edit-icon" @click="editGroup($event,item,index)"/>
         </a-popover>
 
-        {{ item.name }} <span v-if="item.total" class="group-progress">{{item.progress_100_count}}/{{ item.total }}</span></li>
+        {{ item.name }} <span v-if="item.total" class="group-progress">{{ item.progress_100_count }}/{{
+          item.total
+        }}</span></li>
     </ul>
 
     <div class="user-info">
@@ -417,8 +419,12 @@ const columns = [
 const data = ref([]);
 
 const onSearch = (searchValue: string) => {
-  console.log('use value', searchValue);
-  console.log('or use this.value', value.value);
+  console.log(searchValue);
+  if (searchValue) {
+    getAllPlans(searchValue);
+  } else {
+    getAllPlans();
+  }
 };
 
 const getAllGroups = () => {
@@ -427,8 +433,8 @@ const getAllGroups = () => {
   })
 }
 
-const getAllPlans = () => {
-  getPlans().then((res: any) => {
+const getAllPlans = (searchValue: string = '') => {
+  getPlans(searchValue).then((res: any) => {
     data.value = res.data;
   })
 }
@@ -653,7 +659,7 @@ a:hover {
   text-underline-offset: 4px;
 }
 
-.progress-done{
+.progress-done {
   color: #00000070;
 }
 
