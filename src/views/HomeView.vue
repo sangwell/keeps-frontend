@@ -419,7 +419,6 @@ const columns = [
 const data = ref([]);
 
 const onSearch = (searchValue: string) => {
-  console.log(searchValue);
   if (searchValue) {
     getAllPlans(searchValue);
   } else {
