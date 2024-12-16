@@ -40,7 +40,7 @@
           <EditOutlined v-if="groupEditable" class="group-edit-icon" @click="editGroup($event,item,index)"/>
         </a-popover>
 
-        {{ item.name }} <span v-if="item.total" class="group-progress">{{ item.total }}</span></li>
+        {{ item.name }} <span v-if="item.total" class="group-progress">{{item.progress_100_count}}/{{ item.total }}</span></li>
     </ul>
 
     <div class="user-info">
@@ -186,7 +186,7 @@
 
         <template #bodyCell="{ column, record }">
           <template v-if="column.key === 'name'">
-            <a :href="record.url" target="_blank">
+            <a :href="record.url" target="_blank" :class="{'progress-done':record.progress === 100}">
               {{ record.name }}
             </a>
           </template>
@@ -651,6 +651,10 @@ a:hover {
   text-decoration: underline;
   text-decoration-thickness: 2px;
   text-underline-offset: 4px;
+}
+
+.progress-done{
+  color: #00000070;
 }
 
 .float-right {
