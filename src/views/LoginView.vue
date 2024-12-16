@@ -32,6 +32,7 @@
 <script setup lang="ts">
 import {useRouter} from 'vue-router';
 import {reactive} from 'vue';
+// import {userStore} from '../stores/store.ts';
 
 interface FormState {
   username: string;
@@ -52,8 +53,10 @@ const onFinishFailed = (errorInfo: any) => {
   console.log('Failed:', errorInfo);
 };
 const router = useRouter();
+// const store = userStore();
 
 const login = () => {
+  // store.login();
   router.push('/home');
 }
 
