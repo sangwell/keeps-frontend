@@ -499,11 +499,13 @@ onMounted(() => {
 }
 
 .group-name-style {
-  background: #52c41a;
-  color: #ffffff;
+  background: #ffffff;
+  color: #52c41a;
   font-size: 12px;
+  font-weight: bold;
   padding: 2px 4px;
   border-radius: 4px;
+  border: 1px solid #52c41a;
 }
 
 .logo {
