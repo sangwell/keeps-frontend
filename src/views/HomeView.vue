@@ -586,6 +586,11 @@ onMounted(() => {
     cursor: pointer;
     position: relative;
   }
+
+  li:hover{
+    background: #52c41a52;
+    border-radius: 6px;
+  }
 }
 
 .user-info {
