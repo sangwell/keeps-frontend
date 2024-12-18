@@ -34,15 +34,19 @@
           <template #content>
             <a-input v-model:value="selectedGroupName" size="small"/>
             <div class="save-btn-layout">
+              <StarFilled v-if="isGroupFavorite" class="fab-icon-left fab-selected"
+                          @click="isGroupFavorite = !isGroupFavorite"/>
+              <StarOutlined v-else class="fab-icon-left" @click="isGroupFavorite = !isGroupFavorite"/>
               <a-button type="primary" size="small" class="save-btn" @click="saveGroupName">确认</a-button>
             </div>
           </template>
           <EditOutlined v-if="groupEditable" class="group-edit-icon" @click="editGroup($event,item,index)"/>
         </a-popover>
-
+        <StarFilled v-if="!groupEditable && item.favorite" class="fab-icon"/>
         {{ item.name }} <span v-if="item.total" class="group-progress">{{ item.progress_100_count }}/{{
           item.total
-        }}</span></li>
+        }}</span>
+      </li>
     </ul>
 
     <div class="user-info">
@@ -228,7 +232,9 @@ import {
   SettingOutlined,
   MinusOutlined,
   CheckOutlined,
-  QuestionCircleOutlined
+  QuestionCircleOutlined,
+  StarFilled,
+  StarOutlined
 } from '@ant-design/icons-vue';
 import {
   addGroup,
@@ -253,6 +259,7 @@ const editPlanModal = ref();
 const value = ref<string>('');
 const newGroup = ref<string>('');
 const selectedGroupName = ref<string>('');
+const isGroupFavorite = ref<boolean>(false);
 const selectedGroupId = ref<string>('');
 const editingGroupIndex = ref<number>(-1);
 const placeholder = ref<string>('在 “ 全部 ” 下搜索');
@@ -273,6 +280,14 @@ const setSelectedGroup = (index: number) => {
     getAllPlansByGroupId(groupId);
     placeholder.value = `在 “ ${groupName} ” 下搜索`;
   }
+}
+
+const setGroupFavorite = () => {
+  isGroupFavorite.value = true;
+}
+
+const clearGroupFavorite = () => {
+  isGroupFavorite.value = false;
 }
 
 const increase = () => {
@@ -339,7 +354,8 @@ const saveGroup = () => {
 const saveGroupName = () => {
   const id = selectedGroupId.value;
   const name = selectedGroupName.value;
-  updateGroupName({id, name}).then(() => {
+  const favorite = isGroupFavorite.value ? 1 : 0;
+  updateGroupName({id, name, favorite}).then(() => {
     editingGroupIndex.value = -1;
     getAllGroups();
   });
@@ -470,6 +486,24 @@ onMounted(() => {
   font-size: 16px;
 }
 
+.fab-icon-left {
+  float: left;
+  margin-top: 14px;
+  margin-left: 4px;
+  font-size: 16px;
+}
+
+.fab-selected {
+  color: #ff9000;
+}
+
+.fab-icon {
+  color: #ff9000;
+  position: absolute;
+  left: -18px;
+  top: 6px;
+}
+
 .ant-form-item {
   margin-bottom: 10px;
 }
@@ -589,7 +623,7 @@ onMounted(() => {
     position: relative;
   }
 
-  li:hover{
+  li:hover {
     background: #52c41a52;
     border-radius: 6px;
   }
@@ -605,7 +639,7 @@ onMounted(() => {
 
 .group-delete-icon {
   position: absolute;
-  top: 9px;
+  top: 7px;
   left: -40px;
   cursor: pointer;
   color: #000000;
@@ -613,7 +647,7 @@ onMounted(() => {
 
 .group-edit-icon {
   position: absolute;
-  top: 9px;
+  top: 7px;
   left: -18px;
   cursor: pointer;
   color: #000000;
