@@ -163,6 +163,9 @@
                :pagination="{ pageSize: 15 }"
       >
         <template #headerCell="{ column }">
+          <template v-if="column.key === 'favorite'">
+            <span class="column-name"></span>
+          </template>
           <template v-if="column.key === 'name'">
             <span class="column-name">
               学习计划
@@ -198,6 +201,11 @@
           </template>
           <template v-else-if="column.key === 'group'">
             <span class="group-name-style">{{ record.groupName }}</span>
+          </template>
+          <template v-else-if="column.key === 'favorite'">
+            <StarFilled v-if="record.favorite===1" class="fab-plan-filled"
+                        @click="setFavoritePlan(record.id,record.favorite)"/>
+            <StarOutlined v-else class="fab-plan-outline" @click="setFavoritePlan(record.id,record.favorite)"/>
           </template>
           <template v-else-if="column.key === 'createTime'">
             {{ $formatDate(record.timestamp) }}
@@ -244,7 +252,7 @@ import {
   addPlan,
   deletePlan,
   getPlansByGroupId,
-  updateGroupName, backup
+  updateGroupName, backup, updateFavorite
 } from "@/axios";
 import EditPlanModal from "@/components/EditPlanModal.vue";
 
@@ -371,6 +379,17 @@ const getPlansAfterUpdating = () => {
   }
 }
 
+const setFavoritePlan = (id: string, favorite: number) => {
+  const data = {
+    id,
+    favorite: favorite === 0 ? 1 : 0
+  }
+  updateFavorite(data).then(() => {
+    getPlansAfterUpdating();
+    getAllGroups();
+  })
+}
+
 const handlePlanChange = (isOpen: boolean) => {
   if (isOpen) {
     formState.name = '';
@@ -405,6 +424,12 @@ const onFinishFailed = (errorInfo: any) => {
 };
 
 const columns = [
+  {
+    name: 'Favorite',
+    dataIndex: 'favorite',
+    key: 'favorite',
+    width: 20,
+  },
   {
     name: 'Name',
     dataIndex: 'name',
@@ -502,6 +527,24 @@ onMounted(() => {
   position: absolute;
   left: -18px;
   top: 6px;
+}
+
+.fab-plan-filled {
+  color: #ff9000;
+}
+
+.fab-plan-outline {
+  color: #cccccc;
+}
+
+.fab-plan-outline:hover {
+  color: #ff9000;
+}
+
+.fab-plan {
+  position: absolute;
+  top: 15px;
+  left: -18px;
 }
 
 .ant-form-item {
