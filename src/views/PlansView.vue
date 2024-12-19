@@ -1,9 +1,9 @@
 <template>
   <div class="left-content">
-    <div class="logo">
+<!--    <div class="logo">
       <span class="title">Keeps</span>
       <span class="slogan">你的学习进度管理助手👍</span>
-    </div>
+    </div>-->
     <ul class="menu">
 
       <li class="all-group" @click="setSelectedGroup(-1)" :class="{ active: selectedGroup === -1 }">
@@ -48,19 +48,6 @@
         }}</span>
       </li>
     </ul>
-
-    <div class="user-info">
-
-      <a-popconfirm
-        title="确认备份？"
-        ok-text="确认"
-        cancel-text="取消"
-        @confirm="confirmBackUp"
-      >
-        <a-button type="primary">数据库备份</a-button>
-      </a-popconfirm>
-
-    </div>
   </div>
 
   <div class="right-content">
@@ -653,9 +640,9 @@ onMounted(() => {
 }
 
 .menu {
-  height: calc(100vh - 260px);
+  height: calc(100vh - 60px);
   overflow-y: auto;
-  padding: 22px 20px 10px 70px;
+  padding: 50px 20px 10px 60px;
   margin: 0;
 
   li {

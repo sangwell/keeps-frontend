@@ -57,7 +57,8 @@ const router = useRouter();
 
 const login = () => {
   // store.login();
-  router.push('/home');
+  // router.push('/home');
+  router.push('/plans');
 }
 
 </script>

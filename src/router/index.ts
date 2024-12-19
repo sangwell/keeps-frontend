@@ -1,5 +1,9 @@
 import {createRouter, createWebHistory} from 'vue-router'
 import LoginView from "@/views/LoginView.vue";
+import MainView from "@/views/MainView.vue";
+import AboutView from "@/views/AboutView.vue";
+import PlansView from "@/views/PlansView.vue";
+import NotesView from "@/views/NotesView.vue";
 // import {userStore} from '../stores/store.ts';
 
 // const store = userStore();
@@ -8,19 +12,38 @@ const router = createRouter({
   routes: [
     {
       path: '/',
+      redirect: '/login',
+      component: LoginView,
+    },
+    {
+      path: '/login',
       name: 'login',
       component: LoginView,
     },
     {
+      path: '/',
+      component: MainView,
+      children: [
+        {
+          path: 'plans',
+          component: PlansView,
+        },
+        {
+          path: 'notes',
+          component: NotesView,
+        },
+      ],
+    },
+    /*{
       path: '/home',
       name: 'home',
-      component: () => import('../views/HomeView.vue'),
+      component: () => import('../views/PlansView.vue'),
       beforeEnter: () => {
         // reject the navigation
         return true;
         // return store.isAuthenticated
       },
-    },
+    },*/
   ],
 })
 
