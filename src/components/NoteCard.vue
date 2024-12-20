@@ -2,7 +2,7 @@
   <div class="note-box">
     <div class="title">
       <span class="main">{{ props.note.title }}</span>
-      <a-popconfirm placement="right" title="确认删除？" ok-text="删除" cancel-text="取消"
+      <a-popconfirm placement="bottom" title="确认删除？" ok-text="删除" cancel-text="取消"
                     @confirm="delNote()">
         <CloseOutlined class="delete-icon"/>
       </a-popconfirm>
