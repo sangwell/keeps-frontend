@@ -1,17 +1,52 @@
 <template>
   <div class="note-container">
     <div class="bar">
-      <a-button type="primary" shape="circle" @click="addNote">
-        <template #icon>
-          <plus-outlined/>
+      <a-popover v-model:visible="addNoteVisible" @openChange="handlePlanChange" title="添加便笺" trigger="click"
+                 placement="leftTop">
+        <template #content>
+          <a-form
+            :model="formState"
+            name="basic"
+            :label-col="{ span: 3 }"
+            :wrapper-col="{ span: 10 }"
+            autocomplete="off"
+            style="width: 700px"
+          >
+            <a-form-item
+              label="标题"
+              name="标题"
+            >
+              <a-input v-model:value="formState.title" size="small" style="width: 550px"/>
+            </a-form-item>
+
+            <a-form-item
+              label="内容"
+              name="内容"
+            >
+              <a-textarea
+                v-model:value="formState.content"
+                size="small"
+                style="width: 550px;max-width: 550px"
+                :auto-size="{ minRows: 15, maxRows: 15 }"
+              />
+            </a-form-item>
+          </a-form>
+          <div class="save-btn-layout">
+            <a-button type="primary" size="small" class="save-btn" @click="saveNote">确认</a-button>
+          </div>
         </template>
-      </a-button>
+        <a-button type="primary" shape="circle">
+          <template #icon>
+            <plus-outlined/>
+          </template>
+        </a-button>
+      </a-popover>
     </div>
 
     <div class="note-list">
       <a-row :gutter="16">
         <a-col v-for="note in noteList" class="note-row" :span="6">
-          <NoteCard :note="note"/>
+          <NoteCard :note="note" @reload="getAllNotes"/>
         </a-col>
       </a-row>
     </div>
@@ -21,31 +56,50 @@
 </template>
 
 <script setup lang="ts">
-import {ref, onMounted} from 'vue';
+import {ref, onMounted, reactive} from 'vue';
 import {PlusOutlined} from "@ant-design/icons-vue";
 import NoteCard from "@/components/NoteCard.vue";
+import {getNotes, addNote} from "@/axios/note.ts";
 
+interface FormState {
+  title: string;
+  content: string;
+}
+
+const addNoteVisible = ref<boolean>(false);
 const noteList = ref<{ title: string, content: string }>([]);
+const formState = reactive<FormState>({
+  title: '',
+  content: ''
+});
 
 onMounted(() => {
-  noteList.value = [
-    {
-      title: "AAA",
-      content: "BBB"
-    },
-    {
-      title: "AAA2",
-      content: "BBB2"
-    }
-  ];
+  getAllNotes();
 })
 
-const addNote = () => {
-  noteList.value.unshift({
-    title: "AAA2",
-    content: "BBB2"
-  });
+const getAllNotes = () => {
+  getNotes().then((res) => {
+    noteList.value = res.data;
+  })
 }
+
+const handlePlanChange = (isOpen: boolean) => {
+  if (isOpen) {
+    formState.title = '';
+    formState.content = '';
+  }
+}
+
+const saveNote = () => {
+  if (!formState.title || !formState.content) {
+    return;
+  }
+  addNote(formState).then(() => {
+    getAllNotes();
+    addNoteVisible.value = false;
+  })
+}
+
 
 </script>
 
@@ -70,28 +124,8 @@ const addNote = () => {
   margin-bottom: 18px;
 }
 
-.note-box {
-  height: 400px;
-  background: #ffffff;
-  border: 1px solid #d7f1ca;
-
-  .title {
-    background: #d7f1ca;
-    height: 30px;
-    font-size: 16px;
-    font-weight: bold;
-    line-height: 28px;
-    padding: 0 6px;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-  }
-
-  .detail {
-    height: calc(100% - 42px);
-    overflow-y: auto;
-    padding: 6px;
-  }
+.save-btn-layout {
+  text-align: right;
 }
 
 /* 修改整个滚动条的样式 */

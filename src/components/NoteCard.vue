@@ -1,8 +1,12 @@
 <template>
   <div class="note-box">
     <div class="title">
-      {{ props.note.title }}
-      <CloseOutlined class="delete-icon"/>
+      <span class="main">{{ props.note.title }}</span>
+      <a-popconfirm placement="right" title="确认删除？" ok-text="删除" cancel-text="取消"
+                    @confirm="delNote()">
+        <CloseOutlined class="delete-icon"/>
+      </a-popconfirm>
+
       <EditOutlined class="edit-icon"/>
     </div>
     <div class="detail">
@@ -12,11 +16,21 @@
 </template>
 
 <script setup lang="ts">
-import {CloseOutlined,EditOutlined} from "@ant-design/icons-vue";
+import {CloseOutlined, EditOutlined} from "@ant-design/icons-vue";
+import {deleteNote} from "@/axios/note.ts";
 
 const props = defineProps<{
-  note: { title: string, content: string }
+  note: { id: string; title: string, content: string }
 }>()
+
+const emits = defineEmits(['reload']);
+
+const delNote = () => {
+  const id = props.note.id;
+  deleteNote(id).then(() => {
+    emits('reload');
+  });
+}
 </script>
 
 <style scoped>
@@ -27,6 +41,7 @@ const props = defineProps<{
 
   .title {
     background: #d7f1ca;
+    position: relative;
     height: 30px;
     font-size: 16px;
     font-weight: bold;
@@ -35,21 +50,30 @@ const props = defineProps<{
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+
+    .main {
+      width: calc(100% - 50px);
+      display: inline-block;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
   }
 
   .delete-icon {
-    display: none;
-    float: right;
-    margin-top: 6px;
+    position: absolute;
+    right: 7px;
+    margin-top: 7px;
     cursor: pointer;
+    opacity: 0.3;
   }
 
-  .edit-icon{
-    display: none;
-    float: right;
+  .edit-icon {
+    position: absolute;
+    right: 23px;
     margin-top: 6px;
     margin-right: 8px;
     cursor: pointer;
+    opacity: 0.3;
   }
 
   .detail {
@@ -61,10 +85,11 @@ const props = defineProps<{
 
 .note-box:hover {
   .delete-icon {
-    display: block;
+    opacity: 1;
   }
-  .edit-icon{
-    display: block;
+
+  .edit-icon {
+    opacity: 1;
   }
 }
 
