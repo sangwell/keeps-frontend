@@ -61,6 +61,7 @@ const addNote = () => {
 
 .note-list {
   height: calc(100vh - 112px);
+  padding-right: 20px;
   overflow-y: auto;
   overflow-x: hidden;
 }
