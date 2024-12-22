@@ -15,6 +15,13 @@
         便笺
       </li>
     </ul>
+
+    <div class="calendar-layout">
+      <a-calendar :fullscreen="false">
+        <template #headerRender>
+        </template>
+      </a-calendar>
+    </div>
   </div>
 
   <div class="right-content">
@@ -53,6 +60,13 @@ const goToPage = (path)=>{
   height: 100vh;
   position: relative;
   float: left;
+}
+
+.calendar-layout{
+  height: 300px;
+  scale: 0.8;
+  position: absolute;
+  bottom: -25px;
 }
 
 .right-content {
@@ -103,5 +117,17 @@ const goToPage = (path)=>{
     background: #52c41a3b;
     color: #52c41a;
   }
+}
+
+/deep/ .ant-picker-content th {
+  width: 32px!important;
+}
+
+/deep/ .ant-picker-cell-in-view.ant-picker-cell-today .ant-picker-cell-inner::before{
+  border-color: #52c41a;
+}
+
+/deep/ .ant-picker-cell-in-view.ant-picker-cell-selected .ant-picker-cell-inner{
+  background: #52c41a;
 }
 </style>

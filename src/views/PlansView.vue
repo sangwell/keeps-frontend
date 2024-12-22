@@ -1,9 +1,5 @@
 <template>
   <div class="left-content">
-<!--    <div class="logo">
-      <span class="title">Keeps</span>
-      <span class="slogan">你的学习进度管理助手👍</span>
-    </div>-->
     <ul class="menu">
 
       <li class="all-group" @click="setSelectedGroup(-1)" :class="{ active: selectedGroup === -1 }">

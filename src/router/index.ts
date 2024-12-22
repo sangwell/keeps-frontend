@@ -1,10 +1,8 @@
 import {createRouter, createWebHistory} from 'vue-router'
 import LoginView from "@/views/LoginView.vue";
 import MainView from "@/views/MainView.vue";
-import AboutView from "@/views/AboutView.vue";
 import PlansView from "@/views/PlansView.vue";
 import NotesView from "@/views/NotesView.vue";
-// import {userStore} from '../stores/store.ts';
 
 // const store = userStore();
 const router = createRouter({

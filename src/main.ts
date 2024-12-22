@@ -7,6 +7,10 @@ import App from './App.vue'
 import router from './router'
 import moment from "moment";
 
+import dayjs from'dayjs';
+import 'dayjs/locale/zh-cn';
+dayjs.locale('zh-cn');
+
 const app = createApp(App)
 
 // 定义一个全局方法用于格式化日期

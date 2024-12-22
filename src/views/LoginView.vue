@@ -24,6 +24,9 @@
         <a-form-item>
           <a-button type="primary" block @click="login">登录</a-button>
         </a-form-item>
+        <div class="register-layout">
+          <a>注册新账号</a>
+        </div>
       </a-form>
     </div>
   </div>
@@ -32,6 +35,7 @@
 <script setup lang="ts">
 import {useRouter} from 'vue-router';
 import {reactive} from 'vue';
+
 // import {userStore} from '../stores/store.ts';
 
 interface FormState {
@@ -58,7 +62,10 @@ const router = useRouter();
 const login = () => {
   // store.login();
   // router.push('/home');
-  router.push('/plans');
+  if (formState.username === 'admin' && formState.password === 'admin') {
+    router.push('/plans');
+  }
+
 }
 
 </script>
@@ -71,6 +78,7 @@ const login = () => {
   justify-content: center; /* 水平居中 */
   align-items: center; /* 垂直居中 */
 }
+
 .ant-btn-primary {
   background-color: #52c41a
 }
@@ -85,6 +93,10 @@ const login = () => {
 
 .ant-input, .ant-input-affix-wrapper {
   border-radius: 3px;
+}
+
+.register-layout {
+  text-align: center;
 }
 
 .logo-position {
