@@ -1,23 +1,34 @@
 <template>
   <div class="note-box">
     <div class="title">
-      <span class="main">{{ props.note.title }}</span>
-      <a-popconfirm placement="bottom" title="确认删除？" ok-text="删除" cancel-text="取消"
+      <div class="main">
+        <span class="inner" v-if="!isEdit">{{ props.note.title }}</span>
+        <a-input v-model:value="props.note.title" size="small" />
+      </div>
+      <a-popconfirm v-if="!isEdit" placement="bottom" title="确认删除？" ok-text="删除" cancel-text="取消"
                     @confirm="delNote()">
         <CloseOutlined class="delete-icon"/>
       </a-popconfirm>
 
-      <EditOutlined class="edit-icon"/>
+      <EditOutlined v-if="!isEdit" class="edit-icon" @click="startEdit"/>
+
+      <check-outlined v-if="isEdit" class="save-btn" @click="saveNote"/>
+
+      <undo-outlined v-if="isEdit" class="undo-btn" @click="undo"/>
     </div>
-    <div class="detail">
+    <div class="detail" v-if="!isEdit">
       {{ props.note.content }}
+    </div>
+    <div class="detail" v-if="isEdit">
+      <a-textarea v-model:value="props.note.content" :rows="16" />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import {CloseOutlined, EditOutlined} from "@ant-design/icons-vue";
-import {deleteNote} from "@/axios/note.ts";
+import {CloseOutlined, EditOutlined,CheckOutlined,UndoOutlined} from "@ant-design/icons-vue";
+import {deleteNote, updateNote} from "@/axios/note.ts";
+import {ref} from 'vue';
 
 const props = defineProps<{
   note: { id: string; title: string, content: string }
@@ -25,11 +36,34 @@ const props = defineProps<{
 
 const emits = defineEmits(['reload']);
 
+const isEdit=ref(false);
+
+const startEdit = ()=>{
+  isEdit.value = true;
+}
+
 const delNote = () => {
   const id = props.note.id;
   deleteNote(id).then(() => {
     emits('reload');
   });
+}
+
+const saveNote = ()=>{
+  const data={
+    id:props.note.id,
+    title:props.note.title,
+    content:props.note.content
+  }
+  updateNote(data).then(() => {
+    isEdit.value = false;
+    emits('reload');
+  })
+}
+
+const undo = ()=>{
+  isEdit.value = false;
+  emits('reload');
 }
 </script>
 
@@ -56,6 +90,12 @@ const delNote = () => {
       display: inline-block;
       overflow: hidden;
       text-overflow: ellipsis;
+      .inner{
+        width: 100%;
+        display: inline-block;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
     }
   }
 
@@ -74,6 +114,21 @@ const delNote = () => {
     margin-right: 8px;
     cursor: pointer;
     opacity: 0.3;
+  }
+
+  .save-btn{
+    position: absolute;
+    right: 23px;
+    margin-top: 6px;
+    margin-right: 8px;
+    cursor: pointer;
+  }
+
+  .undo-btn{
+    position: absolute;
+    right: 7px;
+    margin-top: 6px;
+    cursor: pointer;
   }
 
   .detail {
