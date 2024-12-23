@@ -7,7 +7,7 @@
 
     <ul class="menu">
       <li :class="{'menu-selected':currentPath==='/plans'}" @click="goToPage('/plans')">
-        <flag-outlined />
+        <flag-outlined/>
         学习计划
       </li>
       <li :class="{'menu-selected':currentPath==='/notes'}" @click="goToPage('/notes')">
@@ -17,7 +17,11 @@
     </ul>
 
     <div class="calendar-layout">
-      <a-calendar :fullscreen="false">
+      <div>
+        <span class="today">{{ selectedDay }}</span>
+        <a class="today-btn" @click="backToToday">今天</a>
+      </div>
+      <a-calendar v-model:value="calendarValue" :fullscreen="false" @select="onDaySelect">
         <template #headerRender>
         </template>
       </a-calendar>
@@ -25,7 +29,7 @@
   </div>
 
   <div class="right-content">
-    <router-view />
+    <router-view/>
   </div>
 </template>
 
@@ -36,19 +40,31 @@ import {
 } from "@ant-design/icons-vue";
 import {onMounted, ref} from "vue";
 import {useRoute, useRouter} from 'vue-router';
+import dayjs from 'dayjs';
 
 const currentPath = ref('');
 const router = useRouter();
+const selectedDay = ref(dayjs().format('YYYY-MM-DD'));
 
-onMounted(()=>{
+const calendarValue = ref();
+
+onMounted(() => {
   const route = useRoute();
-  currentPath.value=route.path;
-  console.log(route.path);
+  currentPath.value = route.path;
 })
 
-const goToPage = (path)=>{
+const goToPage = (path) => {
   router.push(path);
-  currentPath.value=path;
+  currentPath.value = path;
+}
+
+const onDaySelect = (date) => {
+  selectedDay.value = dayjs(date).format('YYYY-MM-DD');
+}
+
+const backToToday = () => {
+  selectedDay.value = dayjs().format('YYYY-MM-DD');
+  calendarValue.value = dayjs();
 }
 
 </script>
@@ -62,11 +78,11 @@ const goToPage = (path)=>{
   float: left;
 }
 
-.calendar-layout{
+.calendar-layout {
   height: 300px;
-  scale: 0.8;
+  scale: 0.9;
   position: absolute;
-  bottom: -25px;
+  bottom: -15px;
 }
 
 .right-content {
@@ -74,6 +90,17 @@ const goToPage = (path)=>{
   height: 100vh;
   position: relative;
   float: left;
+}
+
+.today {
+  color: #52c41a;
+  font-weight: bold;
+}
+
+.today-btn {
+  cursor: pointer;
+  color: #52c41a;
+  float: right;
 }
 
 .logo {
@@ -113,21 +140,21 @@ const goToPage = (path)=>{
     cursor: pointer;
   }
 
-  .menu-selected{
+  .menu-selected {
     background: #52c41a3b;
     color: #52c41a;
   }
 }
 
 /deep/ .ant-picker-content th {
-  width: 32px!important;
+  width: 32px !important;
 }
 
-/deep/ .ant-picker-cell-in-view.ant-picker-cell-today .ant-picker-cell-inner::before{
+/deep/ .ant-picker-cell-in-view.ant-picker-cell-today .ant-picker-cell-inner::before {
   border-color: #52c41a;
 }
 
-/deep/ .ant-picker-cell-in-view.ant-picker-cell-selected .ant-picker-cell-inner{
+/deep/ .ant-picker-cell-in-view.ant-picker-cell-selected .ant-picker-cell-inner {
   background: #52c41a;
 }
 </style>
