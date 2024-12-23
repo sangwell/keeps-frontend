@@ -71,7 +71,7 @@ const undo = ()=>{
 .note-box {
   height: 400px;
   background: #ffffff;
-  border: 1px solid #d7f1ca;
+  border: 1px solid #aaaaaa;
 
   .title {
     background: #d7f1ca;
