@@ -16,9 +16,9 @@
 
       <undo-outlined v-if="isEdit" class="undo-btn" @click="undo"/>
     </div>
-    <div class="detail" v-if="!isEdit">
+    <pre class="detail" v-if="!isEdit">
       {{ props.note.content }}
-    </div>
+    </pre>
     <div class="detail" v-if="isEdit">
       <a-textarea v-model:value="props.note.content" :rows="16" />
     </div>
@@ -134,7 +134,11 @@ const undo = ()=>{
   .detail {
     height: calc(100% - 42px);
     overflow-y: auto;
+    white-space: pre-line;
+    font-size: 16px;
+    font-family: sans-serif;
     padding: 6px;
+    margin: 0;
   }
 }
 
