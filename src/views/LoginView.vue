@@ -22,7 +22,7 @@
         </a-form-item>
 
         <a-form-item>
-          <a-button type="primary" block @click="login">登录</a-button>
+          <a-button type="primary" block @click="login" id="login_btn">登录</a-button>
         </a-form-item>
         <div class="register-layout">
           <a>注册新账号</a>
