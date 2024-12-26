@@ -178,7 +178,7 @@
 
         <template #bodyCell="{ column, record }">
           <template v-if="column.key === 'name'">
-            <a :href="record.url" target="_blank" :class="{'progress-done':record.progress === 100}">
+            <a :href="record.url" target="_blank" :class="{'progress-done':record.progress === 100,'bold-text':record.favorite}">
               {{ record.name }}
             </a>
           </template>
