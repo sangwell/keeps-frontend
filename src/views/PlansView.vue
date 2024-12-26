@@ -20,7 +20,7 @@
         <plus-outlined class="add-btn"/>
       </a-popover>
 
-      <li v-for="(item, index) in groupOptions" :class="{ active: selectedGroup === index }"
+      <li v-for="(item, index) in groupOptions" :class="{ active: selectedGroup === index, 'bold-text':item.favorite }"
           @click="setSelectedGroup(index)">
         <a-popconfirm placement="right" title="确认删除？" ok-text="删除" cancel-text="取消"
                       @confirm="delGroup($event,item)">
@@ -683,6 +683,10 @@ onMounted(() => {
   color: #000000 !important;
   background: #52c41a52;
   border-radius: 6px;
+}
+
+.bold-text{
+  font-weight: bold;
 }
 
 .add-btn {
