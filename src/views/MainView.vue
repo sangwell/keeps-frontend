@@ -14,6 +14,10 @@
         <appstore-add-outlined/>
         便笺
       </li>
+      <li :class="{'menu-selected':currentPath==='/code-snippets'}" @click="goToPage('/code-snippets')">
+        <appstore-add-outlined/>
+        Code snippets
+      </li>
     </ul>
 
     <div class="calendar-layout">

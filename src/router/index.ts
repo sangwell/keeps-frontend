@@ -3,6 +3,7 @@ import LoginView from "@/views/LoginView.vue";
 import MainView from "@/views/MainView.vue";
 import PlansView from "@/views/PlansView.vue";
 import NotesView from "@/views/NotesView.vue";
+import CodeSnippetsView from "@/views/CodeSnippetsView.vue";
 
 // const store = userStore();
 const router = createRouter({
@@ -30,6 +31,10 @@ const router = createRouter({
           path: 'notes',
           component: NotesView,
         },
+        {
+          path: 'code-snippets',
+          component: CodeSnippetsView,
+        }
       ],
     },
     /*{
