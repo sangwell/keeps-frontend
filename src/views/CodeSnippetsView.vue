@@ -5,8 +5,8 @@
       添加 Code snippets
     </a-button>
     <ul class="code-list">
-      <li v-for="(item, index) in codeTitleList" @click="getById(item.id, index)"
-          :class="{ active: selectedSnippet === index }">{{ item.title }}
+      <li v-for="item in codeTitleList" @click="getById(item.id)"
+          :class="{ active: selectedSnippetId === item.id }">{{ item.title }}
       </li>
     </ul>
   </div>
@@ -18,6 +18,11 @@
         <span v-if="codeState === StateEnum.Edit" class="state-title">编辑代码</span>
       </div>
       <div>
+        <a-popconfirm v-if="codeState === StateEnum.View"
+                      placement="rightBottom" title="确认删除？" ok-text="删除" cancel-text="取消"
+                      @confirm="delSnippet()">
+          <delete-outlined class="delete-btn"/>
+        </a-popconfirm>
         <a-button v-if="codeState === StateEnum.Add" class="save-btn" type="primary" @click="saveAdd">保存</a-button>
         <a-button v-if="codeState === StateEnum.Add" class="save-btn" @click="cancelAdd">取消</a-button>
         <a-button v-if="codeState === StateEnum.View" class="save-btn" type="primary" @click="startEdit">开始编辑
@@ -34,9 +39,9 @@
           <codemirror
             v-model="formState.code"
             placeholder="Hello World!"
-            :style="{ fontSize: '20px', height: 'calc(100vh - 123px)' }"
+            :style="{ fontSize: '16px', height: 'calc(100vh - 123px)' }"
             :autofocus="true"
-            :disabled="false"
+            :disabled="codeState === StateEnum.View"
             :indent-with-tab="true"
             :tab-size="4"
             :extensions="extensions"
@@ -66,13 +71,14 @@
 
 <script setup lang="ts">
 import {ref, onMounted, reactive, shallowRef} from 'vue';
-import {PlusOutlined} from "@ant-design/icons-vue";
+import {PlusOutlined, DeleteOutlined} from "@ant-design/icons-vue";
 import {Codemirror} from 'vue-codemirror'
 import {javascript} from '@codemirror/lang-javascript'
 import {oneDark} from '@codemirror/theme-one-dark'
-import {addSnippet, getSnippetById, getSnippetsTitles} from "@/axios";
+import {addSnippet, getSnippetById, getSnippetsTitles, deleteSnippet, updateSnippet} from "@/axios";
 
 interface FormState {
+  id: string;
   title: string;
   description: string;
   code: string;
@@ -85,9 +91,10 @@ const StateEnum = {
 };
 
 const codeState = ref(StateEnum.View);
-const selectedSnippet = ref<number>(-1);
+const selectedSnippetId = ref<string>('');
 const codeTitleList = ref<{ id: string; title: string }>([]);
 const formState = reactive<FormState>({
+  id: '',
   title: '',
   description: '',
   code: ''
@@ -126,24 +133,41 @@ const saveAdd = () => {
 }
 
 const saveEdit = () => {
-  codeState.value = StateEnum.View;
-}
-
-
-onMounted(() => {
-  getAllCodeTitles();
-})
-
-const getAllCodeTitles = () => {
-  getSnippetsTitles().then((res) => {
-    codeTitleList.value = res.data;
+  updateSnippet(formState).then(() => {
+    codeState.value = StateEnum.View;
   })
 }
 
-const getById = (id: string, index: number) => {
-  selectedSnippet.value = index;
+const delSnippet = () => {
+  deleteSnippet(formState.id).then(async () => {
+    await getAllCodeTitles();
+    const firstSnippet = codeTitleList.value[0];
+    if (firstSnippet) {
+      const id = firstSnippet.id;
+      getById(id);
+    }
+  })
+}
+
+onMounted(async () => {
+  await getAllCodeTitles();
+  const firstSnippet = codeTitleList.value[0];
+  if (firstSnippet) {
+    const id = firstSnippet.id;
+    getById(id);
+  }
+})
+
+const getAllCodeTitles = async () => {
+  const result = await getSnippetsTitles();
+  codeTitleList.value = result.data;
+}
+
+const getById = (id: string) => {
+  selectedSnippetId.value = id;
   getSnippetById(id).then((res) => {
     const snippet = res.data[0];
+    formState.id = snippet.id;
     formState.code = snippet.code;
     formState.description = snippet.description;
     formState.title = snippet.title;
@@ -165,7 +189,7 @@ const getById = (id: string, index: number) => {
 .code-list {
   margin: 0;
   list-style: none;
-  padding: 20px 6px;
+  padding: 20px 0;
 
   li {
     font-size: 14px;
@@ -211,6 +235,14 @@ const getById = (id: string, index: number) => {
 .save-btn {
   float: right;
   margin-left: 10px;
+}
+
+.delete-btn {
+  float: right;
+  margin-left: 10px;
+  margin-top: 7px;
+  cursor: pointer;
+  color: red;
 }
 
 .code-view {
