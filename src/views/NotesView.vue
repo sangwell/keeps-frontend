@@ -30,6 +30,13 @@
                 :auto-size="{ minRows: 15, maxRows: 15 }"
               />
             </a-form-item>
+
+            <a-form-item
+              label="链接"
+              name="链接"
+            >
+              <a-input v-model:value="formState.url" size="small" style="width: 550px"/>
+            </a-form-item>
           </a-form>
           <div class="save-btn-layout">
             <a-button type="primary" size="small" class="save-btn" @click="saveNote">确认</a-button>
@@ -64,13 +71,15 @@ import {getNotes, addNote} from "@/axios/note.ts";
 interface FormState {
   title: string;
   content: string;
+  url: string;
 }
 
 const addNoteVisible = ref<boolean>(false);
 const noteList = ref<{ title: string, content: string }>([]);
 const formState = reactive<FormState>({
   title: '',
-  content: ''
+  content: '',
+  url: ''
 });
 
 onMounted(() => {

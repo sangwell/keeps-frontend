@@ -2,8 +2,8 @@
   <div class="note-box">
     <div class="title">
       <div class="main">
-        <span class="inner" v-if="!isEdit">{{ props.note.title }}</span>
-        <a-input v-model:value="props.note.title" size="small" />
+        <span class="inner" v-if="!isEdit"><a :href="props.note.url" target="_blank">{{ props.note.title }}</a></span>
+        <a-input v-model:value="props.note.title" size="small"/>
       </div>
       <a-popconfirm v-if="!isEdit" placement="bottom" title="确认删除？" ok-text="删除" cancel-text="取消"
                     @confirm="delNote()">
@@ -20,13 +20,13 @@
       {{ props.note.content }}
     </pre>
     <div class="detail" v-if="isEdit">
-      <a-textarea v-model:value="props.note.content" :rows="16" />
+      <a-textarea v-model:value="props.note.content" :rows="16"/>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import {CloseOutlined, EditOutlined,CheckOutlined,UndoOutlined} from "@ant-design/icons-vue";
+import {CloseOutlined, EditOutlined, CheckOutlined, UndoOutlined} from "@ant-design/icons-vue";
 import {deleteNote, updateNote} from "@/axios/note.ts";
 import {ref} from 'vue';
 
@@ -36,9 +36,9 @@ const props = defineProps<{
 
 const emits = defineEmits(['reload']);
 
-const isEdit=ref(false);
+const isEdit = ref(false);
 
-const startEdit = ()=>{
+const startEdit = () => {
   isEdit.value = true;
 }
 
@@ -49,11 +49,11 @@ const delNote = () => {
   });
 }
 
-const saveNote = ()=>{
-  const data={
-    id:props.note.id,
-    title:props.note.title,
-    content:props.note.content
+const saveNote = () => {
+  const data = {
+    id: props.note.id,
+    title: props.note.title,
+    content: props.note.content
   }
   updateNote(data).then(() => {
     isEdit.value = false;
@@ -61,7 +61,7 @@ const saveNote = ()=>{
   })
 }
 
-const undo = ()=>{
+const undo = () => {
   isEdit.value = false;
   emits('reload');
 }
@@ -90,7 +90,8 @@ const undo = ()=>{
       display: inline-block;
       overflow: hidden;
       text-overflow: ellipsis;
-      .inner{
+
+      .inner {
         width: 100%;
         display: inline-block;
         overflow: hidden;
@@ -116,7 +117,7 @@ const undo = ()=>{
     opacity: 0.3;
   }
 
-  .save-btn{
+  .save-btn {
     position: absolute;
     right: 23px;
     margin-top: 6px;
@@ -124,7 +125,7 @@ const undo = ()=>{
     cursor: pointer;
   }
 
-  .undo-btn{
+  .undo-btn {
     position: absolute;
     right: 7px;
     margin-top: 6px;
@@ -140,6 +141,15 @@ const undo = ()=>{
     padding: 6px;
     margin: 0;
   }
+}
+
+a {
+  color: #000000;
+}
+
+a:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
 .note-box:hover {
