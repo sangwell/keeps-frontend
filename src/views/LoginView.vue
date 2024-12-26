@@ -10,8 +10,6 @@
         :model="formState"
         name="basic"
         autocomplete="off"
-        @finish="onFinish"
-        @finishFailed="onFinishFailed"
       >
         <a-form-item name="username">
           <a-input v-model:value="formState.username" placeholder="请输入用户名"/>
@@ -22,7 +20,7 @@
         </a-form-item>
 
         <a-form-item>
-          <a-button type="primary" block @click="login" id="login_btn">登录</a-button>
+          <a-button type="primary" html-type="submit" block @click="login" id="login_btn">登录</a-button>
         </a-form-item>
         <div class="register-layout">
           <a>注册新账号</a>
@@ -36,8 +34,6 @@
 import {useRouter} from 'vue-router';
 import {reactive} from 'vue';
 
-// import {userStore} from '../stores/store.ts';
-
 interface FormState {
   username: string;
   password: string;
@@ -49,19 +45,10 @@ const formState = reactive<FormState>({
   password: '',
   remember: true,
 });
-const onFinish = (values: any) => {
-  console.log('Success:', values);
-};
 
-const onFinishFailed = (errorInfo: any) => {
-  console.log('Failed:', errorInfo);
-};
 const router = useRouter();
-// const store = userStore();
 
 const login = () => {
-  // store.login();
-  // router.push('/home');
   if (formState.username === 'admin' && formState.password === 'admin') {
     router.push('/plans');
   }
