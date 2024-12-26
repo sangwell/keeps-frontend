@@ -16,14 +16,14 @@
               label="标题"
               name="标题"
             >
-              <a-input v-model:value="formState.title" size="small" style="width: 550px"/>
+              <a-input id="note_add_title" v-model:value="formState.title" size="small" style="width: 550px"/>
             </a-form-item>
 
             <a-form-item
               label="内容"
               name="内容"
             >
-              <a-textarea
+              <a-textarea id="note_add_content"
                 v-model:value="formState.content"
                 size="small"
                 style="width: 550px;max-width: 550px"
@@ -35,14 +35,14 @@
               label="链接"
               name="链接"
             >
-              <a-input v-model:value="formState.url" size="small" style="width: 550px"/>
+              <a-input id="note_add_url" v-model:value="formState.url" size="small" style="width: 550px"/>
             </a-form-item>
           </a-form>
           <div class="save-btn-layout">
-            <a-button type="primary" size="small" class="save-btn" @click="saveNote">确认</a-button>
+            <a-button id="note_save_btn" type="primary" size="small" class="save-btn" @click="saveNote">确认</a-button>
           </div>
         </template>
-        <a-button type="primary" shape="circle">
+        <a-button id="note_add_btn" type="primary" shape="circle">
           <template #icon>
             <plus-outlined/>
           </template>

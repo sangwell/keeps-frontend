@@ -6,18 +6,18 @@
         全部
       </li>
 
-      <SettingOutlined v-if="!groupEditable" class="setting-btn" @click="toggleGroupEditable"/>
-      <CheckOutlined v-if="groupEditable" class="setting-btn" @click="toggleGroupEditable"/>
+      <SettingOutlined id="group_setting_icon" v-if="!groupEditable" class="setting-btn" @click="toggleGroupEditable"/>
+      <CheckOutlined id="group_ok_icon" v-if="groupEditable" class="setting-btn" @click="toggleGroupEditable"/>
 
       <a-popover v-model:visible="addGroupVisible" @openChange="handleGroupChange" title="添加分类" trigger="click"
                  placement="bottom">
         <template #content>
-          <a-input v-model:value="newGroup" size="small"/>
+          <a-input id="group_add_input" v-model:value="newGroup" size="small"/>
           <div class="save-btn-layout">
-            <a-button type="primary" size="small" class="save-btn" @click="saveGroup">确认</a-button>
+            <a-button id="group_save_btn" type="primary" size="small" class="save-btn" @click="saveGroup">确认</a-button>
           </div>
         </template>
-        <plus-outlined class="add-btn"/>
+        <plus-outlined id="group_add_icon" class="add-btn"/>
       </a-popover>
 
       <li v-for="(item, index) in groupOptions" :class="{ active: selectedGroup === index, 'bold-text':item.favorite }"
