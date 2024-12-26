@@ -1,6 +1,6 @@
 <template>
   <div class="left-container">
-    <a-button block>
+    <a-button block @click="startAdd">
       <PlusOutlined/>
       添加 Code snippets
     </a-button>
@@ -30,16 +30,21 @@
   <div class="code-container">
     <div class="bar">
       <div>
-        添加新代码
+        <span v-if="codeState === StateEnum.View" class="state-title">预览</span>
+        <span v-if="codeState === StateEnum.Add" class="state-title">添加新代码</span>
+        <span v-if="codeState === StateEnum.Edit" class="state-title">编辑代码</span>
       </div>
       <div>
-        <a-button class="save-btn" type="primary">保存</a-button>
+        <a-button v-if="codeState === StateEnum.Add" class="save-btn" type="primary" @click="saveAdd">保存</a-button>
+        <a-button v-if="codeState === StateEnum.View" class="save-btn" type="primary" @click="startEdit">开始编辑</a-button>
+        <a-button v-if="codeState === StateEnum.Edit" class="save-btn" type="primary" @click="saveEdit">保存编辑</a-button>
+        <a-button v-if="codeState === StateEnum.Edit" class="save-btn" @click="cancelEdit">取消编辑</a-button>
       </div>
     </div>
 
     <div class="code-view">
-      <a-row :gutter="16">
-        <a-col class="gutter-row" :span="18">
+      <a-row :gutter="20">
+        <a-col class="gutter-row" :span="16">
           <codemirror
             v-model="code"
             placeholder="Code goes here..."
@@ -52,7 +57,7 @@
             @ready="handleReady"
           />
         </a-col>
-        <a-col :span="6">
+        <a-col :span="8">
           <div class="code-title">实现一个快速排序方法</div>
           <pre class="code-content">
             给你一个字符串 s ，请你判断字符串 s 是否存在一个长度为 2 的子字符串，在其反转后的字符串中也出现。
@@ -82,17 +87,6 @@
           </pre>
         </a-col>
       </a-row>
-      <!--      <codemirror
-        v-model="code"
-        placeholder="Code goes here..."
-        :style="{ fontSize: '20px', height: 'calc(100vh - 123px)' }"
-        :autofocus="true"
-        :disabled="false"
-        :indent-with-tab="true"
-        :tab-size="4"
-        :extensions="extensions"
-        @ready="handleReady"
-      />-->
     </div>
 
 
@@ -102,7 +96,6 @@
 <script setup lang="ts">
 import {ref, onMounted, reactive, shallowRef} from 'vue';
 import {PlusOutlined} from "@ant-design/icons-vue";
-import NoteCard from "@/components/NoteCard.vue";
 import {getNotes, addNote} from "@/axios/note.ts";
 import {Codemirror} from 'vue-codemirror'
 import {javascript} from '@codemirror/lang-javascript'
@@ -113,6 +106,14 @@ interface FormState {
   content: string;
   url: string;
 }
+
+const StateEnum = {
+  View: 'view',
+  Add: 'add',
+  Edit: 'edit'
+};
+
+const codeState = ref(StateEnum.View);
 
 const addNoteVisible = ref<boolean>(false);
 const noteList = ref<{ title: string, content: string }>([]);
@@ -131,6 +132,26 @@ const view = shallowRef()
 const handleReady = (payload) => {
   view.value = payload.view
 }
+
+const startAdd = () => {
+  codeState.value = StateEnum.Add;
+}
+const startEdit = () => {
+  codeState.value = StateEnum.Edit;
+}
+const cancelEdit = () => {
+  codeState.value = StateEnum.View;
+}
+
+const saveAdd = () => {
+  codeState.value = StateEnum.View;
+}
+
+const saveEdit = () => {
+  codeState.value = StateEnum.View;
+}
+
+
 
 // Status is available at all times via Codemirror EditorView
 const getCodemirrorStates = () => {
@@ -214,6 +235,9 @@ const saveNote = () => {
 
 .bar {
   display: flex;
+  .state-title{
+    font-weight: bold;
+  }
 
   div {
     flex: 1;
@@ -223,6 +247,7 @@ const saveNote = () => {
 
 .save-btn {
   float: right;
+  margin-left: 10px;
 }
 
 .code-view {
@@ -231,12 +256,12 @@ const saveNote = () => {
   overflow-x: hidden;
 }
 
-.code-title{
+.code-title {
   font-weight: bold;
   font-size: 16px;
 }
 
-.code-content{
+.code-content {
   white-space: pre-line;
   font-size: 16px;
   font-family: sans-serif;
