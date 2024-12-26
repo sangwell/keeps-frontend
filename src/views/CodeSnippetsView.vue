@@ -5,26 +5,9 @@
       添加 Code snippets
     </a-button>
     <ul class="code-list">
-      <li>实现一个快速排序方法</li>
-      <li>实现一个递归排序方法</li>
-      <li>动态规划</li>
-      <li>字符串及其反转</li>
-      <li>三维数组反转</li>
-      <li>实现一个快速排序方法</li>
-      <li>实现一个递归排序方法</li>
-      <li>动态规划</li>
-      <li>字符串及其反转</li>
-      <li>三维数组反转</li>
-      <li>实现一个快速排序方法</li>
-      <li>实现一个递归排序方法</li>
-      <li>动态规划</li>
-      <li>字符串及其反转</li>
-      <li>三维数组反转</li>
-      <li>实现一个快速排序方法</li>
-      <li>实现一个递归排序方法</li>
-      <li>动态规划</li>
-      <li>字符串及其反转</li>
-      <li>三维数组反转</li>
+      <li v-for="(item, index) in codeTitleList" @click="getById(item.id, index)"
+          :class="{ active: selectedSnippet === index }">{{ item.title }}
+      </li>
     </ul>
   </div>
   <div class="code-container">
@@ -36,8 +19,11 @@
       </div>
       <div>
         <a-button v-if="codeState === StateEnum.Add" class="save-btn" type="primary" @click="saveAdd">保存</a-button>
-        <a-button v-if="codeState === StateEnum.View" class="save-btn" type="primary" @click="startEdit">开始编辑</a-button>
-        <a-button v-if="codeState === StateEnum.Edit" class="save-btn" type="primary" @click="saveEdit">保存编辑</a-button>
+        <a-button v-if="codeState === StateEnum.Add" class="save-btn" @click="cancelAdd">取消</a-button>
+        <a-button v-if="codeState === StateEnum.View" class="save-btn" type="primary" @click="startEdit">开始编辑
+        </a-button>
+        <a-button v-if="codeState === StateEnum.Edit" class="save-btn" type="primary" @click="saveEdit">保存编辑
+        </a-button>
         <a-button v-if="codeState === StateEnum.Edit" class="save-btn" @click="cancelEdit">取消编辑</a-button>
       </div>
     </div>
@@ -46,8 +32,8 @@
       <a-row :gutter="20">
         <a-col class="gutter-row" :span="16">
           <codemirror
-            v-model="code"
-            placeholder="Code goes here..."
+            v-model="formState.code"
+            placeholder="Hello World!"
             :style="{ fontSize: '20px', height: 'calc(100vh - 123px)' }"
             :autofocus="true"
             :disabled="false"
@@ -58,33 +44,18 @@
           />
         </a-col>
         <a-col :span="8">
-          <div class="code-title">实现一个快速排序方法</div>
-          <pre class="code-content">
-            给你一个字符串 s ，请你判断字符串 s 是否存在一个长度为 2 的子字符串，在其反转后的字符串中也出现。
-
-如果存在这样的子字符串，返回 true；如果不存在，返回 false。
-
-示例 1：
-
-输入：s = "leetcode"
-输出：true
-
-解释：子字符串 "ee" 的长度为 2，它也出现在 reverse(s) == "edocteel" 中。
-
-示例 2：
-
-输入：s = "abcba"
-输出：true
-
-解释：所有长度为 2 的子字符串 "ab"、"bc"、"cb"、"ba" 也都出现在 reverse(s) == "abcba" 中。
-
-示例 3：
-
-输入：s = "abcd"
-输出：false
-
-解释：字符串 s 中不存在满足「在其反转后的字符串中也出现」且长度为 2 的子字符串。
+          <div class="code-title" v-if="codeState === StateEnum.View">{{ formState.title }}</div>
+          <div class="code-title" v-if="codeState === StateEnum.Add || codeState === StateEnum.Edit">
+            <a-input v-model:value="formState.title" placeholder="输入标题"/>
+          </div>
+          <pre v-if="codeState === StateEnum.View" class="code-content">
+            {{ formState.description }}
           </pre>
+          <a-textarea v-if="codeState === StateEnum.Add || codeState === StateEnum.Edit"
+                      v-model:value="formState.description"
+                      placeholder="输入描述"
+                      :rows="40"
+                      class="code-textarea"/>
         </a-col>
       </a-row>
     </div>
@@ -96,15 +67,15 @@
 <script setup lang="ts">
 import {ref, onMounted, reactive, shallowRef} from 'vue';
 import {PlusOutlined} from "@ant-design/icons-vue";
-import {getNotes, addNote} from "@/axios/note.ts";
 import {Codemirror} from 'vue-codemirror'
 import {javascript} from '@codemirror/lang-javascript'
 import {oneDark} from '@codemirror/theme-one-dark'
+import {addSnippet, getSnippetById, getSnippetsTitles} from "@/axios";
 
 interface FormState {
   title: string;
-  content: string;
-  url: string;
+  description: string;
+  code: string;
 }
 
 const StateEnum = {
@@ -114,17 +85,14 @@ const StateEnum = {
 };
 
 const codeState = ref(StateEnum.View);
-
-const addNoteVisible = ref<boolean>(false);
-const noteList = ref<{ title: string, content: string }>([]);
+const selectedSnippet = ref<number>(-1);
+const codeTitleList = ref<{ id: string; title: string }>([]);
 const formState = reactive<FormState>({
   title: '',
-  content: '',
-  url: ''
+  description: '',
+  code: ''
 });
 
-
-const code = ref(`console.log('Hello, world!')`)
 const extensions = [javascript(), oneDark]
 
 // Codemirror EditorView instance ref
@@ -135,6 +103,9 @@ const handleReady = (payload) => {
 
 const startAdd = () => {
   codeState.value = StateEnum.Add;
+  formState.title = '';
+  formState.description = '';
+  formState.code = '';
 }
 const startEdit = () => {
   codeState.value = StateEnum.Edit;
@@ -143,8 +114,15 @@ const cancelEdit = () => {
   codeState.value = StateEnum.View;
 }
 
-const saveAdd = () => {
+const cancelAdd = () => {
   codeState.value = StateEnum.View;
+}
+
+const saveAdd = () => {
+  addSnippet(formState).then(() => {
+    codeState.value = StateEnum.View;
+    getAllCodeTitles();
+  })
 }
 
 const saveEdit = () => {
@@ -152,47 +130,25 @@ const saveEdit = () => {
 }
 
 
-
-// Status is available at all times via Codemirror EditorView
-const getCodemirrorStates = () => {
-  const state = view.value.state
-  const ranges = state.selection.ranges
-  const selected = ranges.reduce((r, range) => r + range.to - range.from, 0)
-  const cursor = ranges[0].anchor
-  const length = state.doc.length
-  const lines = state.doc.lines
-  // more state info ...
-  // return ...
-}
-
-
 onMounted(() => {
-  // getAllNotes();
+  getAllCodeTitles();
 })
 
-const getAllNotes = () => {
-  getNotes().then((res) => {
-    noteList.value = res.data;
+const getAllCodeTitles = () => {
+  getSnippetsTitles().then((res) => {
+    codeTitleList.value = res.data;
   })
 }
 
-const handlePlanChange = (isOpen: boolean) => {
-  if (isOpen) {
-    formState.title = '';
-    formState.content = '';
-  }
-}
-
-const saveNote = () => {
-  if (!formState.title || !formState.content) {
-    return;
-  }
-  addNote(formState).then(() => {
-    getAllNotes();
-    addNoteVisible.value = false;
+const getById = (id: string, index: number) => {
+  selectedSnippet.value = index;
+  getSnippetById(id).then((res) => {
+    const snippet = res.data[0];
+    formState.code = snippet.code;
+    formState.description = snippet.description;
+    formState.title = snippet.title;
   })
 }
-
 
 </script>
 
@@ -235,7 +191,8 @@ const saveNote = () => {
 
 .bar {
   display: flex;
-  .state-title{
+
+  .state-title {
     font-weight: bold;
   }
 
@@ -243,6 +200,12 @@ const saveNote = () => {
     flex: 1;
     padding: 0 0 12px 0;
   }
+}
+
+.active {
+  color: #000000 !important;
+  background: #52c41a52;
+  border-radius: 6px;
 }
 
 .save-btn {
@@ -265,6 +228,11 @@ const saveNote = () => {
   white-space: pre-line;
   font-size: 16px;
   font-family: sans-serif;
+}
+
+.code-textarea {
+  margin-top: 12px;
+  height: calc(100vh - 165px);
 }
 
 .save-btn-layout {
