@@ -39,7 +39,7 @@
           <codemirror
             v-model="formState.code"
             placeholder="Hello World!"
-            :style="{ fontSize: '18px', height: 'calc(100vh - 123px)' }"
+            :style="{ fontSize: '18px', height: 'calc(100vh - 123px)', fontFamily: 'sans-serif' }"
             :autofocus="true"
             :disabled="codeState === StateEnum.View"
             :indent-with-tab="true"
@@ -255,7 +255,7 @@ const getById = (id: string) => {
 
 .code-title {
   font-weight: bold;
-  font-size: 16px;
+  font-size: 20px;
 }
 
 .code-content {
@@ -263,6 +263,9 @@ const getById = (id: string) => {
   font-size: 16px;
   font-family: sans-serif;
   line-height: 26px;
+  background: #ffffff;
+  padding: 10px;
+  border-radius: 5px;
 }
 
 .code-textarea {
@@ -270,8 +273,9 @@ const getById = (id: string) => {
   height: calc(100vh - 165px);
 }
 
-.save-btn-layout {
-  text-align: right;
+.ant-btn-default:not(:disabled):hover{
+  color: #52c41a;
+  border-color: #52c41a;
 }
 
 /* 修改整个滚动条的样式 */
