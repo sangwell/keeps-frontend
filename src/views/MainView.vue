@@ -15,12 +15,16 @@
         便笺
       </li>
       <li :class="{'menu-selected':currentPath==='/code-snippets'}" @click="goToPage('/code-snippets')">
-        <appstore-add-outlined/>
+        <CoffeeOutlined />
         代码库
       </li>
       <li :class="{'menu-selected':currentPath==='/three-js'}" @click="goToPage('/three-js')">
-        <appstore-add-outlined/>
+        <FunctionOutlined />
         Three.js
+      </li>
+      <li :class="{'menu-selected':currentPath==='/realtime'}" @click="goToPage('/realtime')">
+        <MailOutlined />
+        实时数据
       </li>
     </ul>
 
@@ -44,7 +48,10 @@
 <script setup lang="ts">
 import {
   AppstoreAddOutlined,
-  FlagOutlined
+  FlagOutlined,
+  CoffeeOutlined,
+  FunctionOutlined,
+  MailOutlined
 } from "@ant-design/icons-vue";
 import {onMounted, ref} from "vue";
 import {useRoute, useRouter} from 'vue-router';

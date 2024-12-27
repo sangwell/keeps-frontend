@@ -5,6 +5,7 @@ import PlansView from "@/views/PlansView.vue";
 import NotesView from "@/views/NotesView.vue";
 import CodeSnippetsView from "@/views/CodeSnippetsView.vue";
 import ThreejsView from "@/views/ThreejsView.vue";
+import RealtimeView from "@/views/RealtimeView.vue";
 
 // const store = userStore();
 const router = createRouter({
@@ -39,6 +40,10 @@ const router = createRouter({
         {
           path: 'three-js',
           component: ThreejsView,
+        },
+        {
+          path: 'realtime',
+          component: RealtimeView,
         }
       ],
     },
