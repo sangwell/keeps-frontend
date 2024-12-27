@@ -2,7 +2,7 @@
   <div class="left-container">
     <a-button block @click="startAdd">
       <PlusOutlined/>
-      添加 Code snippets
+      添加代码
     </a-button>
     <ul class="code-list">
       <li v-for="item in codeTitleList" @click="getById(item.id)"
@@ -34,7 +34,7 @@
     </div>
 
     <div class="code-view">
-      <a-row :gutter="20">
+      <a-row>
         <a-col class="gutter-row" :span="16">
           <codemirror
             v-model="formState.code"
@@ -49,18 +49,20 @@
           />
         </a-col>
         <a-col :span="8">
-          <div class="code-title" v-if="codeState === StateEnum.View">{{ formState.title }}</div>
-          <div class="code-title" v-if="codeState === StateEnum.Add || codeState === StateEnum.Edit">
-            <a-input v-model:value="formState.title" placeholder="输入标题"/>
-          </div>
-          <pre v-if="codeState === StateEnum.View" class="code-content">
+          <div class="code-detail">
+            <div class="code-title" v-if="codeState === StateEnum.View">{{ formState.title }}</div>
+            <div class="code-title" v-if="codeState === StateEnum.Add || codeState === StateEnum.Edit">
+              <a-input v-model:value="formState.title" placeholder="输入标题"/>
+            </div>
+            <pre v-if="codeState === StateEnum.View && formState.description" class="code-content">
             {{ formState.description }}
           </pre>
-          <a-textarea v-if="codeState === StateEnum.Add || codeState === StateEnum.Edit"
-                      v-model:value="formState.description"
-                      placeholder="输入描述"
-                      :rows="40"
-                      class="code-textarea"/>
+            <a-textarea v-if="codeState === StateEnum.Add || codeState === StateEnum.Edit"
+                        v-model:value="formState.description"
+                        placeholder="输入描述"
+                        :rows="40"
+                        class="code-textarea"/>
+          </div>
         </a-col>
       </a-row>
     </div>
@@ -215,6 +217,12 @@ const getById = (id: string) => {
   background: #f3f3f3;
 }
 
+.code-detail {
+  height: calc(100vh - 155px);
+  background: #ffffff;
+  padding: 16px;
+}
+
 .bar {
   display: flex;
 
@@ -263,8 +271,6 @@ const getById = (id: string) => {
   font-size: 16px;
   font-family: sans-serif;
   line-height: 26px;
-  background: #ffffff;
-  padding: 10px;
   border-radius: 5px;
 }
 
@@ -273,7 +279,7 @@ const getById = (id: string) => {
   height: calc(100vh - 165px);
 }
 
-.ant-btn-default:not(:disabled):hover{
+.ant-btn-default:not(:disabled):hover {
   color: #52c41a;
   border-color: #52c41a;
 }

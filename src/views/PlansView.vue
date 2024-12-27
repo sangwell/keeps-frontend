@@ -14,7 +14,8 @@
         <template #content>
           <a-input id="group_add_input" v-model:value="newGroup" size="small"/>
           <div class="save-btn-layout">
-            <a-button id="group_save_btn" type="primary" size="small" class="save-btn" @click="saveGroup">确认</a-button>
+            <a-button id="group_save_btn" type="primary" size="small" class="save-btn" @click="saveGroup">确认
+            </a-button>
           </div>
         </template>
         <plus-outlined id="group_add_icon" class="add-btn"/>
@@ -178,8 +179,11 @@
 
         <template #bodyCell="{ column, record }">
           <template v-if="column.key === 'name'">
-            <a :href="record.url" target="_blank" :class="{'progress-done':record.progress === 100,'bold-text':record.favorite}">
-              {{ record.name }}
+            <a :href="record.url" target="_blank" class="web-url"
+               :class="{'progress-done':record.progress === 100,'bold-text':record.favorite}">
+              <img :src="'https://favicon.im/'+record.url" alt="example.com favicon" class="site-logo"/>{{
+                record.name
+              }}
             </a>
           </template>
           <template v-else-if="column.key === 'group'">
@@ -494,6 +498,18 @@ onMounted(() => {
   font-size: 16px;
 }
 
+.web-url {
+  padding-left: 24px;
+}
+
+.site-logo {
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  top: 12px;
+  left: 5px;
+}
+
 .fab-icon-left {
   float: left;
   margin-top: 14px;
@@ -647,6 +663,8 @@ onMounted(() => {
     padding: 4px 6px 4px 8px;
     cursor: pointer;
     position: relative;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   li:hover {
@@ -685,7 +703,7 @@ onMounted(() => {
   border-radius: 6px;
 }
 
-.bold-text{
+.bold-text {
   font-weight: bold;
 }
 
@@ -716,6 +734,8 @@ onMounted(() => {
   padding: 1px 6px;
   float: right;
   background: #52c41a;
+  position: absolute;
+  right: 4px;
 }
 
 a {

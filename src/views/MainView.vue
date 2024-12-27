@@ -16,7 +16,7 @@
       </li>
       <li :class="{'menu-selected':currentPath==='/code-snippets'}" @click="goToPage('/code-snippets')">
         <appstore-add-outlined/>
-        Code snippets
+        代码库
       </li>
       <li :class="{'menu-selected':currentPath==='/three-js'}" @click="goToPage('/three-js')">
         <appstore-add-outlined/>
