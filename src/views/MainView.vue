@@ -18,6 +18,10 @@
         <appstore-add-outlined/>
         Code snippets
       </li>
+      <li :class="{'menu-selected':currentPath==='/three-js'}" @click="goToPage('/three-js')">
+        <appstore-add-outlined/>
+        Three.js
+      </li>
     </ul>
 
     <div class="calendar-layout">

@@ -4,6 +4,7 @@ import MainView from "@/views/MainView.vue";
 import PlansView from "@/views/PlansView.vue";
 import NotesView from "@/views/NotesView.vue";
 import CodeSnippetsView from "@/views/CodeSnippetsView.vue";
+import ThreejsView from "@/views/ThreejsView.vue";
 
 // const store = userStore();
 const router = createRouter({
@@ -34,6 +35,10 @@ const router = createRouter({
         {
           path: 'code-snippets',
           component: CodeSnippetsView,
+        },
+        {
+          path: 'three-js',
+          component: ThreejsView,
         }
       ],
     },
