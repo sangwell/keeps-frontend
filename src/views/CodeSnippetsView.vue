@@ -39,7 +39,7 @@
           <codemirror
             v-model="formState.code"
             placeholder="Hello World!"
-            :style="{ fontSize: '16px', height: 'calc(100vh - 123px)' }"
+            :style="{ fontSize: '18px', height: 'calc(100vh - 123px)' }"
             :autofocus="true"
             :disabled="codeState === StateEnum.View"
             :indent-with-tab="true"
@@ -110,6 +110,7 @@ const handleReady = (payload) => {
 
 const startAdd = () => {
   codeState.value = StateEnum.Add;
+  selectedSnippetId.value = '';
   formState.title = '';
   formState.description = '';
   formState.code = '';
@@ -123,13 +124,14 @@ const cancelEdit = () => {
 
 const cancelAdd = () => {
   codeState.value = StateEnum.View;
+  getFirstSnippet();
 }
 
-const saveAdd = () => {
-  addSnippet(formState).then(() => {
-    codeState.value = StateEnum.View;
-    getAllCodeTitles();
-  })
+const saveAdd = async () => {
+  await addSnippet(formState);
+  codeState.value = StateEnum.View;
+  await getAllCodeTitles();
+  getFirstSnippet();
 }
 
 const saveEdit = () => {
@@ -141,21 +143,21 @@ const saveEdit = () => {
 const delSnippet = () => {
   deleteSnippet(formState.id).then(async () => {
     await getAllCodeTitles();
-    const firstSnippet = codeTitleList.value[0];
-    if (firstSnippet) {
-      const id = firstSnippet.id;
-      getById(id);
-    }
+    getFirstSnippet();
   })
 }
 
-onMounted(async () => {
-  await getAllCodeTitles();
+const getFirstSnippet = () => {
   const firstSnippet = codeTitleList.value[0];
   if (firstSnippet) {
     const id = firstSnippet.id;
     getById(id);
   }
+}
+
+onMounted(async () => {
+  await getAllCodeTitles();
+  getFirstSnippet();
 })
 
 const getAllCodeTitles = async () => {
@@ -260,6 +262,7 @@ const getById = (id: string) => {
   white-space: pre-line;
   font-size: 16px;
   font-family: sans-serif;
+  line-height: 26px;
 }
 
 .code-textarea {
