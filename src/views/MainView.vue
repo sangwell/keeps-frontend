@@ -155,6 +155,10 @@ const backToToday = () => {
     cursor: pointer;
   }
 
+  li:hover{
+    background: #52c41a3b;
+  }
+
   .menu-selected {
     background: #52c41a3b;
     color: #52c41a;
