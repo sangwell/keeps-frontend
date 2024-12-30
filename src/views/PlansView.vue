@@ -181,7 +181,9 @@
           <template v-if="column.key === 'name'">
             <a :href="record.url" target="_blank" class="web-url"
                :class="{'progress-done':record.progress === 100,'bold-text':record.favorite}">
-              <img :src="'https://favicon.im/'+record.url" alt="example.com favicon" class="site-logo"/>{{
+              <img :src="'https://favicon.im/'+record.url" alt="example.com favicon"
+                   :class="{'progress-done':record.progress === 100}"
+                   class="site-logo"/>{{
                 record.name
               }}
             </a>
@@ -533,7 +535,7 @@ onMounted(() => {
 }
 
 .fab-plan-outline {
-  color: #cccccc;
+  color: #767676;
 }
 
 .fab-plan-outline:hover {
@@ -750,7 +752,7 @@ a:hover {
 }
 
 .progress-done {
-  color: #00000070;
+  opacity: 0.5;
 }
 
 .float-right {
