@@ -1,6 +1,6 @@
 <template>
-  <button @click="connect()">Connect</button>
-  <button @click="disconnect()">Disconnect</button>
+  <a-button @click="connect()" class="margin-right">重连</a-button>
+  <a-button danger @click="disconnect()">断开连接</a-button>
 </template>
 
 <script setup lang="ts">
@@ -17,5 +17,7 @@ const disconnect = () => {
 
 
 <style scoped>
-
+.margin-right {
+  margin-right: 12px;
+}
 </style>

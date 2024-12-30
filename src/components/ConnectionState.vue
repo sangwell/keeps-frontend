@@ -1,5 +1,8 @@
 <template>
-  <p>State: {{ connected }}</p>
+  <h3>
+    <span v-if="connected" class="online">在线</span>
+    <span v-if="!connected" class="offline">离线</span>
+  </h3>
 </template>
 
 <script setup lang="ts">
@@ -12,5 +15,10 @@ const connected = computed(()=>{
 </script>
 
 <style scoped>
-
+.online{
+  color: #52c41a;
+}
+.offline{
+  color: red;
+}
 </style>
