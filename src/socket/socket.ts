@@ -17,7 +17,7 @@ export const socket = io(URL);
 //   autoConnect: false
 // });
 
-socket.on("connect", () => {
+socket.on("connect", (socket) => {
   state.connected = true;
 });
 
@@ -25,10 +25,10 @@ socket.on("disconnect", () => {
   state.connected = false;
 });
 
-socket.on("chat", (...args) => {
+/*socket.on("chat", (...args) => {
   console.log('chat===', ...args);
   state.fooEvents.push(args);
-});
+});*/
 
 socket.on("bar", (...args) => {
   state.barEvents.push(args);

@@ -8,7 +8,7 @@
     <div class="chat-window">
       <div class="chat-content">
         <ul class="message-list">
-          <li v-for="item in messages" :class="{'text-right':item.sender==='me'}">
+          <li v-for="item in messages" :class="{'text-right':item.userId===userId}">
             <span>{{ item.msg }}</span>
           </li>
         </ul>
@@ -28,30 +28,32 @@
 
 <script setup lang="ts">
 import {socket} from "../socket/socket.ts";
-import {ref} from "vue";
+import {ref, onMounted} from "vue";
+import {userIdStore} from "@/stores/userId.ts";
 
 const isLoading = ref(false);
 const text = ref("");
-const rooms = ref(['room1', 'room2', 'room3', 'room1', 'room2', 'room3', 'room1', 'room2', 'room3', 'room1', 'room2', 'room3']);
+const userId = ref("");
+const rooms = ref(['room1', 'room2', 'room3']);
 const messages = ref([
-  {msg: '你好', sender: 'me'},
-  {msg: '我叫Jim', sender: 'me'},
-  {msg: '你好呀', sender: 'other'},
-  {msg: '我Lucy', sender: 'other'},
-  {msg: '你在哪个部门？', sender: 'me'},
-  {msg: '开发部，你呢？', sender: 'other'},
-  {msg: '我也在', sender: 'me'},
-  {msg: '中午一起吃饭', sender: 'other'},
-  {msg: '好呀', sender: 'me'},
+  // {msg: '你好', userId: 'me'},
+  // {msg: '我叫Jim', userId: 'me'}
 ]);
 
 const onSubmit = () => {
   isLoading.value = true;
-  socket.emit("chat", text.value, () => {
+  socket.emit("chat", {msg: text.value, userId: userId.value}, () => {
     isLoading.value = false;
   });
   text.value = "";
 }
+
+onMounted(() => {
+  userId.value = userIdStore().getUserId();
+  socket.on("chat", (message) => {
+    messages.value.push(message);
+  });
+})
 
 </script>
 
@@ -84,7 +86,7 @@ const onSubmit = () => {
   }
 }
 
-.text-right{
+.text-right {
   text-align: right;
 }
 
@@ -98,7 +100,7 @@ const onSubmit = () => {
     line-height: 50px;
     padding: 0 12px;
 
-    span{
+    span {
       background: #52c41a;
       color: #ffffff;
       padding: 6px 15px;
