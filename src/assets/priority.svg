@@ -1,0 +1,12 @@
+<svg width="600" height="400" xmlns="http://www.w3.org/2000/svg">
+    <!-- X轴 -->
+    <line x1="0" y1="200" x2="600" y2="200" stroke="black" />
+    <!-- Y轴 -->
+    <line x1="300" y1="0" x2="300" y2="400" stroke="black" />
+    <!-- X轴刻度和标签 -->
+    <text x="-10" y="51%">不紧急</text>
+    <text x="100%" y="51%">紧急</text>
+    <!-- Y轴刻度和标签 -->
+    <text x="49%" y="100%">不重要</text>
+    <text x="49%" y="0">重要</text>
+</svg>

@@ -26,6 +26,10 @@
         <MailOutlined />
         实时数据
       </li>
+      <li :class="{'menu-selected':currentPath==='/priority-plan'}" @click="goToPage('/priority-plan')">
+        <borderless-table-outlined />
+        优先级计划
+      </li>
     </ul>
 
     <div class="calendar-layout">
@@ -51,7 +55,8 @@ import {
   FlagOutlined,
   CoffeeOutlined,
   FunctionOutlined,
-  MailOutlined
+  MailOutlined,
+  BorderlessTableOutlined
 } from "@ant-design/icons-vue";
 import {onMounted, ref} from "vue";
 import {useRoute, useRouter} from 'vue-router';
