@@ -9,7 +9,12 @@
         <div class="panel three"></div>
         <div class="panel four"></div>
       </div>
+
+      <div class="card">
+        123
+      </div>
     </div>
+
   </div>
 </template>
 
@@ -18,6 +23,27 @@
 </script>
 
 <style scoped>
+.card{
+  width: 150px;
+  height: 80px;
+  border: 2px solid #52c41a;
+  position: absolute;
+  left: 50px;
+  top: 50px;
+}
+
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: -8px;
+  left: -8px;
+  width: 6px;
+  height: 6px;
+  background-color: #52c41a;
+  border-radius: 50%;
+}
+
 .page-container{
   padding: 30px;
   height: calc(100% - 60px);
@@ -29,6 +55,7 @@
 .priority-area{
   width: 1200px;
   height: 1000px;
+  position: relative;
 }
 .row{
   display: flex;
