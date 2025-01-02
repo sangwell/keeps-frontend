@@ -96,6 +96,7 @@ const handlePlanChange = (isOpen: boolean) => {
   if (isOpen) {
     formState.title = '';
     formState.content = '';
+    formState.url = '';
   }
 }
 

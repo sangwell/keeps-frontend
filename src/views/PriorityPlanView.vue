@@ -69,7 +69,6 @@ const deletePlan = (id: string) => {
 
 const getAllPlans = () => {
   getPriorityPlans().then((data) => {
-    console.log(data.data);
     plans.value = data.data;
   })
 }
@@ -81,6 +80,13 @@ onMounted(() => {
 </script>
 
 <style scoped>
+.draggable {
+  cursor: move;
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
 .one-zone {
   position: absolute;
   left: calc(50% + 10px);
