@@ -84,14 +84,14 @@ onMounted(() => {
 .one-zone {
   position: absolute;
   left: calc(50% + 10px);
-  font-size: 26px;
+  font-size: 30px;
   color: #ebebeb;
 }
 
 .two-zone {
   position: absolute;
   left: 10px;
-  font-size: 26px;
+  font-size: 30px;
   color: #ebebeb;
 }
 
@@ -99,7 +99,7 @@ onMounted(() => {
   position: absolute;
   left: calc(50% + 10px);
   top: calc(50% + 8px);
-  font-size: 26px;
+  font-size: 30px;
   color: #ebebeb;
 }
 
@@ -107,7 +107,7 @@ onMounted(() => {
   position: absolute;
   left: 10px;
   top: calc(50% + 8px);
-  font-size: 26px;
+  font-size: 30px;
   color: #ebebeb;
 }
 
@@ -185,7 +185,7 @@ onMounted(() => {
   top: 3px;
   right: 2px;
   font-size: 14px;
-  background: #ff0000;
+  background: #ffafaf;
 }
 
 .page-container {
