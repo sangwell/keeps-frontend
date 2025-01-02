@@ -3,6 +3,16 @@
     <a-dropdown :trigger="['contextmenu']">
       <div class="priority-area" ref="areaRef">
 
+        <div class="not-urgent">不紧急</div>
+        <div class="urgent">紧急</div>
+        <div class="not-important">不重要</div>
+        <div class="important">重要</div>
+
+        <div class="one-zone">第一象限：既紧急又重要 - 优先解决立即做</div>
+        <div class="two-zone">第二象限：重要但不紧急 - 制定计划去做</div>
+        <div class="three-zone">第三象限：紧急但不重要 - 安排别人去做</div>
+        <div class="four-zone">第四象限：不重要不紧急 - 尽量别做</div>
+
         <div class="card" v-for="(item,index) in plans" :style="{left:item.x+'px',top:item.y+'px'}">
           <span v-if="!item.editable">{{ item.title }}</span>
           <a-input v-if="item.editable" v-model:value="item.title" size="small"/>
@@ -10,7 +20,6 @@
           <CloseOutlined v-if="item.editable" class="delete-icon" @click="deletePlan(index)"/>
         </div>
       </div>
-
 
       <template #overlay>
         <a-menu>
@@ -49,13 +58,64 @@ const deletePlan = (index: number) => {
 </script>
 
 <style scoped>
+.one-zone{
+  position: absolute;
+  left: calc(50% + 10px);
+  font-size: 26px;
+  color: #cccccc;
+}
+.two-zone{
+  position: absolute;
+  left: 10px;
+  font-size: 26px;
+  color: #cccccc;
+}
+.three-zone{
+  position: absolute;
+  left: calc(50% + 10px);
+  top: calc(50% + 8px);
+  font-size: 26px;
+  color: #cccccc;
+}
+.four-zone{
+  position: absolute;
+  left: 10px;
+  top: calc(50% + 8px);
+  font-size: 26px;
+  color: #cccccc;
+}
+
+.not-urgent{
+  position: absolute;
+  top: calc(50% - 11px);
+  left: -60px;
+  font-size: 16px;
+}
+.urgent{
+  position: absolute;
+  right: -40px;
+  top: calc(50% - 11px);
+  font-size: 16px;
+}
+.not-important{
+  position: absolute;
+  bottom: -25px;
+  left: calc(50% - 23px);
+  font-size: 16px;
+}
+.important{
+  position: absolute;
+  top: -25px;
+  left: calc(50% - 16px);
+  font-size: 16px;
+}
+
 .card {
   border: 2px solid #c1ffa4;
   position: absolute;
   font-size: 12px;
   padding: 3px 2px 5px 2px;
 }
-
 
 .card::before {
   content: '';
@@ -94,7 +154,7 @@ const deletePlan = (index: number) => {
   width: 1200px;
   height: 1000px;
   position: relative;
-  background: #effce8;
+  background: #f6fff1;
 }
 
 .priority-area::before {
