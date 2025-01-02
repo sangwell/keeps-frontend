@@ -17,7 +17,9 @@
           <span v-if="!item.editable">{{ item.title }}</span>
           <a-input v-if="item.editable" v-model:value="item.title" size="small"/>
           <CheckOutlined v-if="item.editable" class="save-icon" @click="savePlan(item)"/>
-          <CloseOutlined v-if="item.editable" class="delete-icon" @click="deletePlan(index)"/>
+          <CloseOutlined v-if="item.editable" class="cancel-add-icon" @click="cancelAddPlan(index)"/>
+
+          <CloseOutlined v-if="!item.editable" class="delete-icon" @click="deletePlan(item.id)"/>
         </div>
       </div>
 
@@ -34,7 +36,8 @@
 
 <script setup lang="ts">
 import {CheckOutlined, CloseOutlined} from "@ant-design/icons-vue";
-import {ref} from "vue";
+import {ref, onMounted} from "vue";
+import {addPriorityPlan, deletePriorityPlan, getPriorityPlans} from "@/axios";
 
 const plans = ref([]);
 const areaRef = ref(null);
@@ -48,62 +51,88 @@ const addPlan = ($event: any) => {
 }
 
 const savePlan = (plan: any) => {
-  plan.editable = false;
+  addPriorityPlan(plan).then(() => {
+    plan.editable = false;
+    getAllPlans();
+  });
 }
 
-const deletePlan = (index: number) => {
+const cancelAddPlan = (index: number) => {
   plans.value.splice(index, 1);
 }
+
+const deletePlan = (id: string) => {
+  deletePriorityPlan(id).then(() => {
+    getAllPlans();
+  })
+}
+
+const getAllPlans = () => {
+  getPriorityPlans().then((data) => {
+    console.log(data.data);
+    plans.value = data.data;
+  })
+}
+
+onMounted(() => {
+  getAllPlans();
+})
 
 </script>
 
 <style scoped>
-.one-zone{
+.one-zone {
   position: absolute;
   left: calc(50% + 10px);
   font-size: 26px;
-  color: #cccccc;
-}
-.two-zone{
-  position: absolute;
-  left: 10px;
-  font-size: 26px;
-  color: #cccccc;
-}
-.three-zone{
-  position: absolute;
-  left: calc(50% + 10px);
-  top: calc(50% + 8px);
-  font-size: 26px;
-  color: #cccccc;
-}
-.four-zone{
-  position: absolute;
-  left: 10px;
-  top: calc(50% + 8px);
-  font-size: 26px;
-  color: #cccccc;
+  color: #ebebeb;
 }
 
-.not-urgent{
+.two-zone {
+  position: absolute;
+  left: 10px;
+  font-size: 26px;
+  color: #ebebeb;
+}
+
+.three-zone {
+  position: absolute;
+  left: calc(50% + 10px);
+  top: calc(50% + 8px);
+  font-size: 26px;
+  color: #ebebeb;
+}
+
+.four-zone {
+  position: absolute;
+  left: 10px;
+  top: calc(50% + 8px);
+  font-size: 26px;
+  color: #ebebeb;
+}
+
+.not-urgent {
   position: absolute;
   top: calc(50% - 11px);
   left: -60px;
   font-size: 16px;
 }
-.urgent{
+
+.urgent {
   position: absolute;
   right: -40px;
   top: calc(50% - 11px);
   font-size: 16px;
 }
-.not-important{
+
+.not-important {
   position: absolute;
   bottom: -25px;
   left: calc(50% - 23px);
   font-size: 16px;
 }
-.important{
+
+.important {
   position: absolute;
   top: -25px;
   left: calc(50% - 16px);
@@ -115,6 +144,8 @@ const deletePlan = (index: number) => {
   position: absolute;
   font-size: 12px;
   padding: 3px 2px 5px 2px;
+  cursor: pointer;
+  font-weight: bold;
 }
 
 .card::before {
@@ -127,6 +158,12 @@ const deletePlan = (index: number) => {
   background-color: #52c41a;
 }
 
+.card:hover {
+  .delete-icon {
+    display: block;
+  }
+}
+
 .save-icon {
   float: right;
   margin-top: 4px;
@@ -135,11 +172,20 @@ const deletePlan = (index: number) => {
   color: #52c41a;
 }
 
-.delete-icon {
+.cancel-add-icon {
   margin-top: 4px;
   font-size: 16px;
   cursor: pointer;
   color: red;
+}
+
+.delete-icon {
+  display: none;
+  position: absolute;
+  top: 3px;
+  right: 2px;
+  font-size: 14px;
+  background: #ff0000;
 }
 
 .page-container {
@@ -154,7 +200,6 @@ const deletePlan = (index: number) => {
   width: 1200px;
   height: 1000px;
   position: relative;
-  background: #f6fff1;
 }
 
 .priority-area::before {
