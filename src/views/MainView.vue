@@ -167,6 +167,7 @@ const backToToday = () => {
   .menu-selected {
     background: #52c41a3b;
     color: #52c41a;
+    font-weight: bold;
   }
 }
 
