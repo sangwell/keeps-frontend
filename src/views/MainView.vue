@@ -12,7 +12,7 @@
       </li>
       <li :class="{'menu-selected':currentPath==='/notes'}" @click="goToPage('/notes')">
         <appstore-add-outlined/>
-        便笺
+        职位
       </li>
       <li :class="{'menu-selected':currentPath==='/code-snippets'}" @click="goToPage('/code-snippets')">
         <CoffeeOutlined />
