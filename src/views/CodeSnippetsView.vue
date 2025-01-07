@@ -238,6 +238,7 @@ const getById = (id: string) => {
 
 .active {
   color: #000000 !important;
+  font-weight: bold;
   background: #52c41a52;
   border-radius: 6px;
 }
