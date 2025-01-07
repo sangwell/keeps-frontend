@@ -32,7 +32,7 @@
       </li>
       <li :class="{'menu-selected':currentPath==='/ai-resume'}" @click="goToPage('/ai-resume')">
         <FileDoneOutlined />
-        AI简历
+        简历 AI 助手
       </li>
     </ul>
 
