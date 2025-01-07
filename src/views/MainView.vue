@@ -30,6 +30,10 @@
         <borderless-table-outlined />
         优先级计划
       </li>
+      <li :class="{'menu-selected':currentPath==='/ai-resume'}" @click="goToPage('/ai-resume')">
+        <FileDoneOutlined />
+        AI简历
+      </li>
     </ul>
 
     <div class="calendar-layout">
@@ -56,7 +60,8 @@ import {
   CoffeeOutlined,
   FunctionOutlined,
   MailOutlined,
-  BorderlessTableOutlined
+  BorderlessTableOutlined,
+  FileDoneOutlined
 } from "@ant-design/icons-vue";
 import {onMounted, ref} from "vue";
 import {useRoute, useRouter} from 'vue-router';
