@@ -26,7 +26,8 @@
     "three": "^0.171.0",
     "vue": "^3.5.13",
     "vue-codemirror": "^6.1.1",
-    "vue-router": "^4.4.5"
+    "vue-router": "^4.4.5",
+    "vue3-markdown": "^1.1.9"
   },
   "devDependencies": {
     "@tsconfig/node22": "^22.0.0",
