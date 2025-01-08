@@ -130,14 +130,25 @@ const cancelAdd = () => {
 }
 
 const saveAdd = async () => {
-  await addSnippet(formState);
+  const data = {
+    title: formState.title,
+    description: formState.description,
+    code: encodeURIComponent(formState.code)
+  }
+  await addSnippet(data);
   codeState.value = StateEnum.View;
   await getAllCodeTitles();
   getFirstSnippet();
 }
 
 const saveEdit = () => {
-  updateSnippet(formState).then(() => {
+  const data = {
+    id: formState.id,
+    title: formState.title,
+    description: formState.description,
+    code: encodeURIComponent(formState.code)
+  }
+  updateSnippet(data).then(() => {
     codeState.value = StateEnum.View;
   })
 }
@@ -172,7 +183,7 @@ const getById = (id: string) => {
   getSnippetById(id).then((res) => {
     const snippet = res.data[0];
     formState.id = snippet.id;
-    formState.code = snippet.code;
+    formState.code = decodeURIComponent(snippet.code);
     formState.description = snippet.description;
     formState.title = snippet.title;
   })
