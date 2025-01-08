@@ -192,12 +192,12 @@ const getById = (id: string) => {
 
 .code-list {
   margin: 0;
-  list-style: none;
-  padding: 20px 0;
+  list-style: auto;
+  padding: 20px 0 20px 20px;
 
   li {
     font-size: 14px;
-    padding: 4px 6px 4px 8px;
+    padding: 6px 6px 6px 8px;
     cursor: pointer;
   }
 
