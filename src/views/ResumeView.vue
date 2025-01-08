@@ -35,18 +35,11 @@
 
       <div class="step-item">
         <h2>第三步：开始匹配</h2>
-        <a-button type="primary" :size="'large'" @click="startMatch">
-          <template #icon>
-            <ThunderboltOutlined/>
-          </template>
-          开始匹配
-        </a-button>
-
         <a-button type="primary" :size="'large'" @click="startMatchStream" style="margin-left: 20px">
           <template #icon>
             <ThunderboltOutlined/>
           </template>
-          开始匹配(Stream)
+          开始匹配
         </a-button>
       </div>
     </div>
@@ -97,15 +90,6 @@ const selectChange = (content: string) => {
 const getAllJobs = () => {
   getNotes().then((res) => {
     jobList.value = res.data;
-  })
-}
-
-const startMatch = () => {
-  const data = {
-    jobContent: jobContent.value + '\\n分析下上面的招聘要求',
-  };
-  match(data).then(res => {
-    matchResult.value = res.data;
   })
 }
 
