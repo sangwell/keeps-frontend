@@ -10,28 +10,28 @@
         <flag-outlined/>
         学习计划
       </li>
+      <li :class="{'menu-selected':currentPath==='/priority-plan'}" @click="goToPage('/priority-plan')">
+        <borderless-table-outlined/>
+        优先级计划
+      </li>
+      <li :class="{'menu-selected':currentPath==='/code-snippets'}" @click="goToPage('/code-snippets')">
+        <CoffeeOutlined/>
+        代码库
+      </li>
+      <li :class="{'menu-selected':currentPath==='/three-js'}" @click="goToPage('/three-js')">
+        <FunctionOutlined/>
+        Three.js
+      </li>
+      <li :class="{'menu-selected':currentPath==='/realtime'}" @click="goToPage('/realtime')">
+        <MailOutlined/>
+        实时数据
+      </li>
       <li :class="{'menu-selected':currentPath==='/notes'}" @click="goToPage('/notes')">
         <appstore-add-outlined/>
         职位
       </li>
-      <li :class="{'menu-selected':currentPath==='/code-snippets'}" @click="goToPage('/code-snippets')">
-        <CoffeeOutlined />
-        代码库
-      </li>
-      <li :class="{'menu-selected':currentPath==='/three-js'}" @click="goToPage('/three-js')">
-        <FunctionOutlined />
-        Three.js
-      </li>
-      <li :class="{'menu-selected':currentPath==='/realtime'}" @click="goToPage('/realtime')">
-        <MailOutlined />
-        实时数据
-      </li>
-      <li :class="{'menu-selected':currentPath==='/priority-plan'}" @click="goToPage('/priority-plan')">
-        <borderless-table-outlined />
-        优先级计划
-      </li>
       <li :class="{'menu-selected':currentPath==='/ai-resume'}" @click="goToPage('/ai-resume')">
-        <FileDoneOutlined />
+        <FileDoneOutlined/>
         简历 AI 助手
       </li>
     </ul>
@@ -165,7 +165,7 @@ const backToToday = () => {
     cursor: pointer;
   }
 
-  li:hover{
+  li:hover {
     background: #52c41a3b;
   }
 
