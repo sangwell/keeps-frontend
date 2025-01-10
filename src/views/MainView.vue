@@ -7,31 +7,38 @@
 
     <ul class="menu">
       <li :class="{'menu-selected':currentPath==='/plans'}" @click="goToPage('/plans')">
-        <flag-outlined/>
+        <!--        <flag-outlined/>-->
+        <span class="menu-icon">🙋‍♀️</span>
         学习计划
       </li>
       <li :class="{'menu-selected':currentPath==='/priority-plan'}" @click="goToPage('/priority-plan')">
-        <borderless-table-outlined/>
+<!--        <borderless-table-outlined/>-->
+        <span class="menu-icon">🥌</span>
         优先级计划
       </li>
       <li :class="{'menu-selected':currentPath==='/code-snippets'}" @click="goToPage('/code-snippets')">
-        <CoffeeOutlined/>
+<!--        <CoffeeOutlined/>-->
+        <span class="menu-icon">📒</span>
         代码库
       </li>
       <li :class="{'menu-selected':currentPath==='/three-js'}" @click="goToPage('/three-js')">
-        <FunctionOutlined/>
+<!--        <FunctionOutlined/>-->
+        <span class="menu-icon">🤩</span>
         Three.js
       </li>
       <li :class="{'menu-selected':currentPath==='/realtime'}" @click="goToPage('/realtime')">
-        <MailOutlined/>
+<!--        <MailOutlined/>-->
+        <span class="menu-icon">📲</span>
         实时数据
       </li>
       <li :class="{'menu-selected':currentPath==='/notes'}" @click="goToPage('/notes')">
-        <appstore-add-outlined/>
+<!--        <appstore-add-outlined/>-->
+        <span class="menu-icon">👩‍💻</span>
         职位
       </li>
       <li :class="{'menu-selected':currentPath==='/ai-resume'}" @click="goToPage('/ai-resume')">
-        <FileDoneOutlined/>
+<!--        <FileDoneOutlined/>-->
+        <span class="menu-icon">🤖</span>
         简历 AI 助手
       </li>
     </ul>
@@ -158,10 +165,14 @@ const backToToday = () => {
   margin: 0;
   padding: 0;
 
+  .menu-icon {
+    font-size: 20px;
+  }
+
   li {
     list-style: none;
     padding: 12px 10px 12px 30px;
-    font-size: 14px;
+    font-size: 16px;
     cursor: pointer;
   }
 
