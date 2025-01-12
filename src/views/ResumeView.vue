@@ -157,7 +157,7 @@ function handleDrop(e: DragEvent) {
 }
 
 .result-content {
-  height: calc(100vh - 197px);
+  height: calc(100vh - 210px);
   background: #ffffff;
   overflow: auto;
   border: 1px solid #cccccc;
