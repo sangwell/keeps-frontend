@@ -35,7 +35,7 @@
 
       <div class="step-item">
         <h2>第三步：开始匹配</h2>
-        <a-button type="primary" :size="'large'" @click="startMatchStream" style="margin-left: 20px">
+        <a-button type="primary" :size="'large'" @click="startMatchStream">
           <template #icon>
             <ThunderboltOutlined/>
           </template>
