@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <div class="logo-position">
+    <div class="logo-position" @click="loginDirect">
       <span class="title">Keeps</span>
       <span class="slogan">你的学习进度管理助手👍</span>
     </div>
@@ -52,7 +52,10 @@ const login = () => {
   if (formState.username === 'admin' && formState.password === 'admin') {
     router.push('/plans');
   }
+}
 
+const loginDirect = () => {
+  router.push('/plans');
 }
 
 </script>
