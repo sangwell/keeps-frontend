@@ -7,37 +7,34 @@
 
     <ul class="menu">
       <li :class="{'menu-selected':currentPath==='/plans'}" @click="goToPage('/plans')">
-        <!--        <flag-outlined/>-->
         <span class="menu-icon">🙋‍♀️</span>
         学习计划
       </li>
       <li :class="{'menu-selected':currentPath==='/priority-plan'}" @click="goToPage('/priority-plan')">
-<!--        <borderless-table-outlined/>-->
         <span class="menu-icon">🥌</span>
         优先级计划
       </li>
+      <li :class="{'menu-selected':currentPath==='/step-planning'}" @click="goToPage('/step-planning')">
+        <span class="menu-icon">⛳</span>
+        分步规划
+      </li>
       <li :class="{'menu-selected':currentPath==='/code-snippets'}" @click="goToPage('/code-snippets')">
-<!--        <CoffeeOutlined/>-->
         <span class="menu-icon">📒</span>
         代码库
       </li>
       <li :class="{'menu-selected':currentPath==='/three-js'}" @click="goToPage('/three-js')">
-<!--        <FunctionOutlined/>-->
         <span class="menu-icon">🤩</span>
         Three.js
       </li>
       <li :class="{'menu-selected':currentPath==='/realtime'}" @click="goToPage('/realtime')">
-<!--        <MailOutlined/>-->
         <span class="menu-icon">📲</span>
         实时数据
       </li>
       <li :class="{'menu-selected':currentPath==='/notes'}" @click="goToPage('/notes')">
-<!--        <appstore-add-outlined/>-->
         <span class="menu-icon">👩‍💻</span>
         职位
       </li>
       <li :class="{'menu-selected':currentPath==='/ai-resume'}" @click="goToPage('/ai-resume')">
-<!--        <FileDoneOutlined/>-->
         <span class="menu-icon">🤖</span>
         简历 AI 助手
       </li>
@@ -61,15 +58,6 @@
 </template>
 
 <script setup lang="ts">
-import {
-  AppstoreAddOutlined,
-  FlagOutlined,
-  CoffeeOutlined,
-  FunctionOutlined,
-  MailOutlined,
-  BorderlessTableOutlined,
-  FileDoneOutlined
-} from "@ant-design/icons-vue";
 import {onMounted, ref} from "vue";
 import {useRoute, useRouter} from 'vue-router';
 import dayjs from 'dayjs';
