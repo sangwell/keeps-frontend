@@ -9,6 +9,7 @@ import RealtimeView from "@/views/RealtimeView.vue";
 import PriorityPlanView from "@/views/PriorityPlanView.vue";
 import ResumeView from "@/views/ResumeView.vue";
 import StepPlanningView from "@/views/StepPlanningView.vue";
+import FileUploadView from "@/views/FileUploadView.vue";
 
 // const store = userStore();
 const router = createRouter({
@@ -59,6 +60,10 @@ const router = createRouter({
         {
           path: 'ai-resume',
           component: ResumeView,
+        },
+        {
+          path: 'file-upload',
+          component: FileUploadView,
         }
       ],
     },

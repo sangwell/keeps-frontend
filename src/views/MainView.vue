@@ -38,6 +38,10 @@
         <span class="menu-icon">🤖</span>
         简历 AI 助手
       </li>
+      <li :class="{'menu-selected':currentPath==='/file-upload'}" @click="goToPage('/file-upload')">
+        <span class="menu-icon">📒</span>
+        文件上传
+      </li>
     </ul>
 
     <div class="calendar-layout">
