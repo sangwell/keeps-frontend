@@ -9,13 +9,15 @@
               <a-list-item>
                 {{ item }}
                 <template #actions>
+                  <a class="list-item-download" @click="download(item)">下载</a>
+
                   <a-popconfirm
                     title="确认删除？"
                     ok-text="删除"
                     cancel-text="取消"
                     @confirm="deleteSelectedFile(item)"
                   >
-                    <a key="list-loadmore-more">删除</a>
+                    <a class="list-item-delete">删除</a>
                   </a-popconfirm>
                 </template>
               </a-list-item>
@@ -31,7 +33,7 @@
             v-model:fileList="fileList"
             name="file"
             :multiple="true"
-            action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+            action="http://localhost:8066/upload/add"
             @change="handleChange"
             @drop="handleDrop"
           >
@@ -55,7 +57,7 @@ import {onMounted, ref} from 'vue';
 import {InboxOutlined} from '@ant-design/icons-vue';
 import {message} from 'ant-design-vue';
 import type {UploadChangeParam} from 'ant-design-vue';
-import {getFileNames, deleteFile} from "@/axios";
+import {getFileNames, deleteFile, downloadFile} from "@/axios";
 
 const fileList = ref([]);
 const handleChange = (info: UploadChangeParam) => {
@@ -64,9 +66,10 @@ const handleChange = (info: UploadChangeParam) => {
     console.log(info.file, info.fileList);
   }
   if (status === 'done') {
-    message.success(`${info.file.name} file uploaded successfully.`);
+    message.success(`"${info.file.name}" 上传成功！`);
+    getFileNameList();
   } else if (status === 'error') {
-    message.error(`${info.file.name} file upload failed.`);
+    message.error(`"${info.file.name}" 上传失败！`);
   }
 };
 
@@ -85,7 +88,27 @@ const getFileNameList = () => {
 const deleteSelectedFile = (name: string) => {
   deleteFile(name).then(() => {
     getFileNameList();
-    // data.value = files.data.files;
+  })
+}
+
+const download = (name: string) => {
+  downloadFile(name).then((response) => {
+    console.log(response);
+    // 创建临时链接
+    const href = URL.createObjectURL(response.data);
+
+    // 创建 <a> 标签并设置属性
+    const link = document.createElement('a');
+    link.href = href;
+    link.download = name; // 设置下载的文件名
+    document.body.appendChild(link);
+
+    // 触发下载
+    link.click();
+
+    // 清理临时链接
+    URL.revokeObjectURL(href);
+    document.body.removeChild(link);
   })
 }
 
@@ -101,6 +124,16 @@ onMounted(() => {
 }
 
 .ant-list-item {
+  font-size: 16px;
+}
+
+.list-item-download {
+  color: #52c41a;
+  font-size: 16px;
+}
+
+.list-item-delete {
+  color: red;
   font-size: 16px;
 }
 </style>
