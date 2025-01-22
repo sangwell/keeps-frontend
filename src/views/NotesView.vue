@@ -141,6 +141,7 @@ const saveNote = () => {
 /* 修改整个滚动条的样式 */
 ::-webkit-scrollbar {
   width: 5px; /* 滚动条宽度 */
+  height: 5px;
 }
 
 /* 修改滚动条的滑块样式 */
