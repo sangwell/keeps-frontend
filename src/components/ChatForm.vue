@@ -51,6 +51,7 @@ const onSubmit = () => {
 onMounted(() => {
   userId.value = userIdStore().getUserId();
   socket.on("chat", (message) => {
+    console.log(message);
     messages.value.push(message);
   });
 })
