@@ -26,6 +26,10 @@
         <span class="menu-icon">🤩</span>
         Three.js
       </li>
+      <li :class="{'menu-selected':currentPath==='/webrtc'}" @click="goToPage('/webrtc')">
+        <span class="menu-icon">🤩</span>
+        WebRTC
+      </li>
       <li :class="{'menu-selected':currentPath==='/realtime'}" @click="goToPage('/realtime')">
         <span class="menu-icon">📲</span>
         实时数据

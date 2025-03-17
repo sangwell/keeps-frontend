@@ -10,6 +10,7 @@ import PriorityPlanView from "@/views/PriorityPlanView.vue";
 import ResumeView from "@/views/ResumeView.vue";
 import StepPlanningView from "@/views/StepPlanningView.vue";
 import FileUploadView from "@/views/FileUploadView.vue";
+import WebRTCView from "@/views/WebRTCView.vue"
 
 // const store = userStore();
 const router = createRouter({
@@ -44,6 +45,10 @@ const router = createRouter({
         {
           path: 'three-js',
           component: ThreejsView,
+        },
+        {
+          path: 'webrtc',
+          component: WebRTCView,
         },
         {
           path: 'realtime',
