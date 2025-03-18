@@ -79,7 +79,7 @@ const onSubmit = async () => {
     })
   }
 
-  video.srcObject = await this.getTargetDeviceMedia(this.formInline.videoId, this.formInline.audioInId)
+  video.srcObject = await getTargetDeviceMedia(formInline.value.videoId, formInline.value.audioInId)
   video.muted = true
 }
 
@@ -92,9 +92,9 @@ const getTargetDeviceMedia = async (videoId, audioId) => {
     audio: {deviceId: audioId ? {exact: audioId} : undefined},
     video: {
       deviceId: videoId ? {exact: videoId} : undefined,
-      width: this.formInline.width,
-      height: this.formInline.height,
-      frameRate: {ideal: this.formInline.frameRate, max: 24}
+      width: formInline.value.width,
+      height: formInline.value.height,
+      frameRate: {ideal: formInline.value.frameRate, max: 24}
     }
   };
   if (window.stream) {
@@ -103,7 +103,7 @@ const getTargetDeviceMedia = async (videoId, audioId) => {
     });
   }
   //被调用方法前面有，此处不再重复
-  return await this.getLocalUserMedia(constraints).catch(handleError);
+  return await getLocalUserMedia(constraints).catch(handleError);
 }
 
 const handleError = (error) => {
