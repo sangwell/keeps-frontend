@@ -43,6 +43,7 @@
     <a-input-number v-model:value="formInline.frameRate"/>
   </div>
   <a-button type="primary" @click="onSubmit">确定</a-button>
+  <a-button type="primary" @click="shareScreen">共享屏幕</a-button>
   <video id="localdemo01" autoplay controls muted></video>
 </template>
 
@@ -80,6 +81,23 @@ const onSubmit = async () => {
   }
 
   video.srcObject = await getTargetDeviceMedia(formInline.value.videoId, formInline.value.audioInId)
+  video.muted = true
+}
+
+const shareScreen = async () => {
+  const domId = "localdemo01";
+  const video: any = document.getElementById(domId);
+  const stream = video.srcObject;
+  if (stream) {
+    stream.getAudioTracks().forEach(e => {
+      stream.removeTrack(e)
+    })
+    stream.getVideoTracks().forEach(e => {
+      stream.removeTrack(e)
+    })
+  }
+
+  video.srcObject = await getShareMedia()
   video.muted = true
 }
 
@@ -162,6 +180,25 @@ const initInnerLocalDevice = () => {
     })
     .catch(handleError);
 }
+
+/**
+ * 获取屏幕分享的媒体流
+ * @author suke
+ * @returns {Promise<void>}
+ */
+const getShareMedia = async () => {
+  const constraints = {
+    video: {width: 1920, height: 1080},
+    audio: false
+  };
+  if (window.stream) {
+    window.stream.getTracks().forEach(track => {
+      track.stop();
+    });
+  }
+  return await navigator.mediaDevices.getDisplayMedia(constraints).catch(handleError);
+}
+
 
 onMounted(() => {
   initInnerLocalDevice();
